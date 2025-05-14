@@ -2,15 +2,26 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, LogOut } from 'lucide-react';
 import AuthLayout from '@/components/layouts/AuthLayout';
+import { toast } from '@/components/ui/use-toast';
 
 const KYCSuccess = () => {
   const navigate = useNavigate();
 
   const handleContinue = () => {
     // In a real application, this would navigate to the dashboard
-    navigate('/');
+    navigate('/dashboard');
+  };
+
+  const handleLogout = () => {
+    // In a real app, this would clear auth tokens
+    localStorage.removeItem('isAuthenticated');
+    toast({
+      title: "Logged out successfully",
+      description: "You have been logged out of your account",
+    });
+    navigate('/login');
   };
 
   return (
@@ -25,14 +36,23 @@ const KYCSuccess = () => {
         </h3>
         <p className="text-sm text-gray-600 mb-6">
           We are reviewing your information. This typically takes 1-2 business days.
-          You will receive an update via SMS once the verification is complete.
         </p>
-        <Button 
-          onClick={handleContinue} 
-          className="w-full bg-myntra-purple hover:bg-myntra-dark"
-        >
-          Continue to Dashboard
-        </Button>
+        <div className="space-y-3">
+          <Button 
+            onClick={handleContinue} 
+            className="w-full bg-myntra-purple hover:bg-myntra-dark"
+          >
+            Continue to Dashboard
+          </Button>
+          <Button 
+            onClick={handleLogout} 
+            variant="outline" 
+            className="w-full flex items-center justify-center gap-2"
+          >
+            <LogOut size={16} />
+            Logout
+          </Button>
+        </div>
       </div>
     </AuthLayout>
   );
