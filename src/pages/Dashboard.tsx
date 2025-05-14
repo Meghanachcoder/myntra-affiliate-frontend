@@ -1,12 +1,11 @@
-
 import React, { useState } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
 import { useNavigate } from 'react-router-dom';
-import { useToast } from '@/components/ui/use-toast';
-import { Check, Clock, FileText, Edit, AlertTriangle, TrendingUp } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { Check, Clock, FileText, Edit, AlertTriangle, TrendingUp, LogOut } from 'lucide-react';
 import MyntraLogo from '@/components/MyntraLogo';
 
 const Dashboard = () => {
@@ -99,6 +98,15 @@ const Dashboard = () => {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('isAuthenticated');
+    toast({
+      title: "Logged out",
+      description: "You have been successfully logged out.",
+    });
+    navigate('/login');
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -108,9 +116,18 @@ const Dashboard = () => {
             <MyntraLogo className="h-8 w-auto mr-3" />
             <h1 className="text-xl font-bold text-gray-900">Affiliate Dashboard</h1>
           </div>
-          <div>
+          <div className="flex items-center gap-4">
             <span className="text-sm text-gray-600 mr-2">Affiliate ID:</span>
             <span className="font-medium">MYNTRA123</span>
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={handleLogout}
+              className="flex items-center text-gray-600 hover:text-red-600"
+            >
+              <LogOut className="h-4 w-4 mr-1" />
+              Logout
+            </Button>
           </div>
         </div>
       </header>
