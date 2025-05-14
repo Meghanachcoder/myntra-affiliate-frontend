@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -9,7 +8,7 @@ import { Eye, EyeOff } from 'lucide-react';
 
 const Signup = () => {
   const [searchParams] = useSearchParams();
-  const affiliateId = searchParams.get('affiliateId') || '';
+  const affiliateId = searchParams.get('affiliateId') || 'MYNTRA123'; // Default dummy affiliate ID
   const navigate = useNavigate();
   const { toast } = useToast();
   

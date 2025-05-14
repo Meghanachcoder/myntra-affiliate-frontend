@@ -92,8 +92,8 @@ const KYC = () => {
         title: "KYC Submitted",
         description: "Your KYC details have been submitted successfully.",
       });
-      // Redirect to dashboard or confirmation page
-      navigate('/kyc-success');
+      // Redirect to dashboard page instead of KYC success
+      navigate('/dashboard');
     }
   };
 
