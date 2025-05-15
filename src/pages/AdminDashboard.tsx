@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { LogOut, Search, Check, Clock, AlertTriangle, UserCheck } from 'lucide-react';
+import { LogOut, Search, Check, Clock, AlertTriangle, UserCheck, ExternalLink } from 'lucide-react';
 import MyntraLogo from '@/components/MyntraLogo';
 
 const AdminDashboard = () => {
@@ -70,6 +70,10 @@ const AdminDashboard = () => {
       description: "You have been successfully logged out.",
     });
     navigate('/login');
+  };
+
+  const handleViewAffiliate = (affiliateId: string) => {
+    navigate(`/admin/affiliate/${affiliateId}`);
   };
 
   const getStatusBadge = (status: string) => {
@@ -152,6 +156,7 @@ const AdminDashboard = () => {
                     <TableHead>Pending Payout</TableHead>
                     <TableHead>Net Payout</TableHead>
                     <TableHead>Last Updated</TableHead>
+                    <TableHead></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -164,11 +169,22 @@ const AdminDashboard = () => {
                       <TableCell>{affiliate.pendingPayout}</TableCell>
                       <TableCell>{affiliate.netPayout}</TableCell>
                       <TableCell>{affiliate.lastUpdated}</TableCell>
+                      <TableCell>
+                        <Button 
+                          size="sm" 
+                          variant="ghost"
+                          onClick={() => handleViewAffiliate(affiliate.id)}
+                          className="flex items-center"
+                        >
+                          <ExternalLink className="h-4 w-4 mr-1" />
+                          View
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   ))}
                   {filteredAffiliates.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={7} className="text-center py-6 text-gray-500">
+                      <TableCell colSpan={8} className="text-center py-6 text-gray-500">
                         No affiliates found matching your search.
                       </TableCell>
                     </TableRow>
@@ -184,4 +200,3 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
-

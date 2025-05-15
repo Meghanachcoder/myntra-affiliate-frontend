@@ -10,6 +10,7 @@ import KYC from "./pages/KYC";
 import KYCSuccess from "./pages/KYCSuccess";
 import Dashboard from "./pages/Dashboard";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminAffiliateDetails from "./pages/AdminAffiliateDetails";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/kyc-success" element={<KYCSuccess />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/affiliate/:id" element={<AdminAffiliateDetails />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
@@ -36,4 +38,3 @@ const App = () => (
 );
 
 export default App;
-
