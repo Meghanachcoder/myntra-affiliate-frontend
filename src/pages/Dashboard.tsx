@@ -63,14 +63,6 @@ const Dashboard = () => {
     accountName: 'John Doe'
   };
   
-  const handleEditKyc = () => {
-    toast({
-      title: "Edit KYC",
-      description: "You will be redirected to update your KYC details.",
-    });
-    navigate('/kyc');
-  };
-  
   const handleDownloadInvoice = (invoiceId: string) => {
     toast({
       title: "Invoice Download",
@@ -125,7 +117,6 @@ const Dashboard = () => {
           <TabsContent value="kyc">
             <KycDetailsTab 
               kycDetails={kycDetails} 
-              onEditKyc={handleEditKyc} 
             />
           </TabsContent>
         </Tabs>
