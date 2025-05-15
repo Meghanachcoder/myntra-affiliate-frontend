@@ -44,8 +44,7 @@ const AdminAffiliateDetails = () => {
         { label: 'Base Amount', value: '₹10,593.22' },
         { label: 'GST (18%)', value: '₹1,906.78' },
         { label: 'TDS (10%)', value: '-₹1,059.32' },
-        { label: 'Processing Fee', value: '-₹200.00' },
-        { label: 'Net Payable', value: '₹11,240.68' }
+        { label: 'Net Payable', value: '₹11,440.68' }
       ],
       status: 'Pending'
     },
