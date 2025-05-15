@@ -43,19 +43,16 @@ const KYC = () => {
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
     
-    // Validate based on active tab
-    if (activeTab === 'pan') {
-      if (!formData.pan) {
-        newErrors.pan = 'PAN is required';
-      } else if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(formData.pan)) {
-        newErrors.pan = 'Please enter a valid PAN';
-      }
-    } else {
-      if (!formData.gstin) {
-        newErrors.gstin = 'GSTIN is required';
-      } else if (!/^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}[Z]{1}[A-Z\d]{1}$/.test(formData.gstin)) {
-        newErrors.gstin = 'Please enter a valid GSTIN';
-      }
+    // Always validate PAN regardless of active tab - PAN is required
+    if (!formData.pan) {
+      newErrors.pan = 'PAN is required';
+    } else if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(formData.pan)) {
+      newErrors.pan = 'Please enter a valid PAN';
+    }
+    
+    // GSTIN is now optional, only validate format if provided
+    if (formData.gstin && !/^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}[Z]{1}[A-Z\d]{1}$/.test(formData.gstin)) {
+      newErrors.gstin = 'Please enter a valid GSTIN';
     }
     
     // Validate bank account details
@@ -103,8 +100,6 @@ const KYC = () => {
     const newErrors = { ...errors };
     if (value === 'pan') {
       delete newErrors.gstin;
-    } else {
-      delete newErrors.pan;
     }
     setErrors(newErrors);
   };
@@ -115,38 +110,29 @@ const KYC = () => {
       subtitle="Complete your KYC to start receiving payments"
     >
       <form onSubmit={handleSubmit} className="space-y-6">
-        <Tabs defaultValue="pan" value={activeTab} onValueChange={handleTabChange}>
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="pan">PAN Card</TabsTrigger>
-            <TabsTrigger value="gstin">GSTIN</TabsTrigger>
-          </TabsList>
-          <TabsContent value="pan" className="pt-4">
-            <InputField 
-              label="PAN Number" 
-              name="pan" 
-              placeholder="ABCDE1234F" 
-              value={formData.pan} 
-              onChange={handleChange}
-              error={errors.pan}
-              className="mb-4"
-              maxLength={10}
-              autoComplete="off"
-            />
-          </TabsContent>
-          <TabsContent value="gstin" className="pt-4">
-            <InputField 
-              label="GSTIN" 
-              name="gstin" 
-              placeholder="22AAAAA0000A1Z5" 
-              value={formData.gstin} 
-              onChange={handleChange}
-              error={errors.gstin}
-              className="mb-4"
-              maxLength={15}
-              autoComplete="off"
-            />
-          </TabsContent>
-        </Tabs>
+        <InputField 
+          label="PAN Number (Required)" 
+          name="pan" 
+          placeholder="ABCDE1234F" 
+          value={formData.pan} 
+          onChange={handleChange}
+          error={errors.pan}
+          className="mb-4"
+          maxLength={10}
+          autoComplete="off"
+        />
+        
+        <InputField 
+          label="GSTIN (Optional)" 
+          name="gstin" 
+          placeholder="22AAAAA0000A1Z5" 
+          value={formData.gstin} 
+          onChange={handleChange}
+          error={errors.gstin}
+          className="mb-4"
+          maxLength={15}
+          autoComplete="off"
+        />
         
         <div className="form-divider">
           <div className="form-divider-line"></div>

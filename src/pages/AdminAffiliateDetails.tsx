@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
@@ -16,12 +15,11 @@ const AdminAffiliateDetails = () => {
   const { id } = useParams<{ id: string }>();
   const [activeTab, setActiveTab] = useState('kyc');
 
-  // Mock data for the affiliate
+  // Mock data for the affiliate - removed email
   const affiliate = {
     id: id || 'MYNTRA123',
     name: 'John Doe',
     phone: '+91 9876543210',
-    email: 'john.doe@example.com',
     kycStatus: 'Pending',
     pendingPayout: '₹12,500',
     netPayout: '₹47,800',
