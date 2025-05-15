@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ThumbsUp, ThumbsDown, FileText } from 'lucide-react';
+import { ThumbsUp, ThumbsDown } from 'lucide-react';
 
 type AffiliateKycTabProps = {
   kycDetails: {
@@ -27,16 +27,8 @@ const AffiliateKycTab = ({ kycDetails, kycStatus, onVerify }: AffiliateKycTabPro
     <div className="space-y-6">
       <Card>
         <CardContent className="p-6">
-          <div className="flex justify-between items-center mb-6">
+          <div className="mb-6">
             <h2 className="text-xl font-semibold">Identity Details</h2>
-            <Button 
-              variant="outline"
-              size="sm"
-              className="flex items-center"
-            >
-              <FileText className="h-4 w-4 mr-1" />
-              View Document
-            </Button>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -54,16 +46,8 @@ const AffiliateKycTab = ({ kycDetails, kycStatus, onVerify }: AffiliateKycTabPro
       
       <Card>
         <CardContent className="p-6">
-          <div className="flex justify-between items-center mb-6">
+          <div className="mb-6">
             <h2 className="text-xl font-semibold">Bank Account Details</h2>
-            <Button 
-              variant="outline"
-              size="sm"
-              className="flex items-center"
-            >
-              <FileText className="h-4 w-4 mr-1" />
-              View Document
-            </Button>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
