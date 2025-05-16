@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
@@ -148,7 +147,7 @@ const AdminDashboard = () => {
                     <TableHead>Name</TableHead>
                     <TableHead>Phone</TableHead>
                     <TableHead>KYC Status</TableHead>
-                    <TableHead>Net Payout</TableHead>
+                    <TableHead>Net Payout Till Date</TableHead>
                     <TableHead>Last Updated</TableHead>
                     <TableHead></TableHead>
                   </TableRow>
