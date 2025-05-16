@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
@@ -15,13 +16,12 @@ const AdminAffiliateDetails = () => {
   const { id } = useParams<{ id: string }>();
   const [activeTab, setActiveTab] = useState('kyc');
 
-  // Mock data for the affiliate - removed email
+  // Mock data for the affiliate - removed email and pending payout
   const affiliate = {
     id: id || 'MYNTRA123',
     name: 'John Doe',
     phone: '+91 9876543210',
     kycStatus: 'Pending',
-    pendingPayout: '₹12,500',
     netPayout: '₹47,800',
     lastUpdated: '15 May, 2025',
     kycDetails: {
@@ -39,10 +39,9 @@ const AdminAffiliateDetails = () => {
       amount: '₹12,500',
       date: '15 May, 2025',
       breakdown: [
-        { label: 'Base Amount', value: '₹10,593.22' },
-        { label: 'GST (18%)', value: '₹1,906.78' },
-        { label: 'TDS (10%)', value: '-₹1,059.32' },
-        { label: 'Net Payable', value: '₹11,440.68' }
+        { label: 'Base Amount', value: '₹12,500.00' },
+        { label: 'TDS (10%)', value: '-₹1,250.00' },
+        { label: 'Net Payable', value: '₹11,250.00' }
       ],
       status: 'Pending'
     },

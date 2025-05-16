@@ -18,7 +18,6 @@ type DashboardTabContentProps = {
     date: string;
   };
   payoutInfo: {
-    pending: string;
     netPayout: string;
     lastPayout: string;
     lastPayoutDate: string;
@@ -37,20 +36,13 @@ const DashboardTabContent = ({
 }: DashboardTabContentProps) => {
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <KycStatusCard 
           status={kycStatus.status}
           date={kycStatus.date}
         />
         
         <PayoutCard
-          type="pending"
-          amount={payoutInfo.pending}
-          subtext={`Expected by 30 May, 2025`}
-        />
-        
-        <PayoutCard
-          type="net"
           amount={payoutInfo.netPayout}
           subtext={`Last payout: ${payoutInfo.lastPayout} on ${payoutInfo.lastPayoutDate}`}
         />

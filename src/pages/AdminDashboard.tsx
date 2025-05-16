@@ -14,14 +14,13 @@ const AdminDashboard = () => {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Mock data for affiliates
+  // Mock data for affiliates - removed pendingPayout
   const affiliates = [
     {
       id: 'MYNTRA123',
       name: 'John Doe',
       phone: '+91 9876543210',
       kycStatus: 'Verified',
-      pendingPayout: '₹12,500',
       netPayout: '₹47,800',
       lastUpdated: '15 May, 2025'
     },
@@ -30,7 +29,6 @@ const AdminDashboard = () => {
       name: 'Jane Smith',
       phone: '+91 9876543211',
       kycStatus: 'Pending',
-      pendingPayout: '₹8,700',
       netPayout: '₹32,400',
       lastUpdated: '12 May, 2025'
     },
@@ -39,7 +37,6 @@ const AdminDashboard = () => {
       name: 'David Johnson',
       phone: '+91 9876543212',
       kycStatus: 'Rejected',
-      pendingPayout: '₹0',
       netPayout: '₹15,600',
       lastUpdated: '10 May, 2025'
     },
@@ -48,7 +45,6 @@ const AdminDashboard = () => {
       name: 'Sarah Williams',
       phone: '+91 9876543213',
       kycStatus: 'Verified',
-      pendingPayout: '₹21,500',
       netPayout: '₹89,200',
       lastUpdated: '14 May, 2025'
     },
@@ -57,7 +53,6 @@ const AdminDashboard = () => {
       name: 'Michael Brown',
       phone: '+91 9876543214',
       kycStatus: 'Verified',
-      pendingPayout: '₹5,800',
       netPayout: '₹61,300',
       lastUpdated: '11 May, 2025'
     }
@@ -153,7 +148,6 @@ const AdminDashboard = () => {
                     <TableHead>Name</TableHead>
                     <TableHead>Phone</TableHead>
                     <TableHead>KYC Status</TableHead>
-                    <TableHead>Pending Payout</TableHead>
                     <TableHead>Net Payout</TableHead>
                     <TableHead>Last Updated</TableHead>
                     <TableHead></TableHead>
@@ -166,7 +160,6 @@ const AdminDashboard = () => {
                       <TableCell>{affiliate.name}</TableCell>
                       <TableCell>{affiliate.phone}</TableCell>
                       <TableCell>{getStatusBadge(affiliate.kycStatus)}</TableCell>
-                      <TableCell>{affiliate.pendingPayout}</TableCell>
                       <TableCell>{affiliate.netPayout}</TableCell>
                       <TableCell>{affiliate.lastUpdated}</TableCell>
                       <TableCell>
@@ -184,7 +177,7 @@ const AdminDashboard = () => {
                   ))}
                   {filteredAffiliates.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={8} className="text-center py-6 text-gray-500">
+                      <TableCell colSpan={7} className="text-center py-6 text-gray-500">
                         No affiliates found matching your search.
                       </TableCell>
                     </TableRow>

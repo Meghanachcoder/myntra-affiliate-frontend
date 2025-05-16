@@ -22,7 +22,6 @@ const Dashboard = () => {
   };
   
   const payoutInfo = {
-    pending: '₹12,500',
     netPayout: '₹47,800',
     lastPayout: '₹8,200',
     lastPayoutDate: '10 May, 2025'

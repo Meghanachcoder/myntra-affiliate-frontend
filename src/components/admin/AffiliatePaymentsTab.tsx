@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { Calendar, CreditCard } from 'lucide-react';
+import { Calendar, CreditCard, AlertTriangle } from 'lucide-react';
 
 type PaymentBreakdown = {
   label: string;
@@ -39,6 +39,10 @@ const AffiliatePaymentsTab = ({ currentPayment, onProcessPayment }: AffiliatePay
         
         <div className="bg-gray-50 p-4 rounded-md mb-6">
           <h3 className="font-medium mb-3">Payment Breakdown</h3>
+          <div className="flex items-center mb-4 p-2 bg-yellow-50 text-yellow-800 rounded-md">
+            <AlertTriangle className="h-4 w-4 mr-2" />
+            <p className="text-sm">This calculation is for a non GST compliant affiliate.</p>
+          </div>
           {currentPayment.breakdown.map((item, index) => (
             <div key={index} className="flex justify-between py-2">
               <span className="text-gray-600">{item.label}</span>
