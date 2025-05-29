@@ -93,16 +93,16 @@ const AdminAffiliateDetails = () => {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div className="flex items-center">
             <MyntraLogo className="h-8 w-auto mr-3" />
-            <h1 className="text-xl font-bold text-gray-900">Admin Dashboard</h1>
+            <h1 className="text-lg sm:text-xl font-bold text-gray-900">Admin Dashboard</h1>
           </div>
           <Button 
             variant="ghost" 
             size="sm"
             onClick={handleLogout}
-            className="flex items-center text-gray-600 hover:text-red-600"
+            className="flex items-center text-gray-600 hover:text-red-600 self-end sm:self-auto"
           >
             <LogOut className="h-4 w-4 mr-1" />
             Logout
@@ -111,11 +111,11 @@ const AdminAffiliateDetails = () => {
       </header>
       
       {/* Main content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         <Button 
           variant="ghost" 
           onClick={handleBackToList}
-          className="flex items-center mb-6"
+          className="flex items-center mb-4 sm:mb-6"
         >
           <ChevronLeft className="h-4 w-4 mr-1" />
           Back to Affiliates List
@@ -123,11 +123,11 @@ const AdminAffiliateDetails = () => {
         
         <AffiliateDetailsHeader affiliate={affiliate} />
         
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-8">
-          <TabsList className="bg-white shadow-sm rounded-md">
-            <TabsTrigger value="kyc">KYC Details</TabsTrigger>
-            <TabsTrigger value="payments">Payment Details</TabsTrigger>
-            <TabsTrigger value="invoices">Invoices</TabsTrigger>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6 sm:mt-8">
+          <TabsList className="bg-white shadow-sm rounded-md w-full sm:w-auto grid grid-cols-3 sm:flex">
+            <TabsTrigger value="kyc" className="text-xs sm:text-sm">KYC Details</TabsTrigger>
+            <TabsTrigger value="payments" className="text-xs sm:text-sm">Payment Details</TabsTrigger>
+            <TabsTrigger value="invoices" className="text-xs sm:text-sm">Invoices</TabsTrigger>
           </TabsList>
           
           {/* KYC Details Tab */}

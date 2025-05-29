@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
@@ -102,16 +103,16 @@ const AdminDashboard = () => {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div className="flex items-center">
             <MyntraLogo className="h-8 w-auto mr-3" />
-            <h1 className="text-xl font-bold text-gray-900">Admin Dashboard</h1>
+            <h1 className="text-lg sm:text-xl font-bold text-gray-900">Admin Dashboard</h1>
           </div>
           <Button 
             variant="ghost" 
             size="sm"
             onClick={handleLogout}
-            className="flex items-center text-gray-600 hover:text-red-600"
+            className="flex items-center text-gray-600 hover:text-red-600 self-end sm:self-auto"
           >
             <LogOut className="h-4 w-4 mr-1" />
             Logout
@@ -122,13 +123,13 @@ const AdminDashboard = () => {
       {/* Main content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Card className="mb-8">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-6">
+          <CardContent className="p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
               <div className="flex items-center space-x-2">
                 <UserCheck className="h-6 w-6 text-myntra-purple" />
-                <h2 className="text-xl font-semibold">Affiliate Management</h2>
+                <h2 className="text-lg sm:text-xl font-semibold">Affiliate Management</h2>
               </div>
-              <div className="relative w-64">
+              <div className="relative w-full sm:w-64">
                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
                 <Input
                   placeholder="Search affiliates..."
@@ -139,50 +140,57 @@ const AdminDashboard = () => {
               </div>
             </div>
             
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Affiliate ID</TableHead>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Phone</TableHead>
-                    <TableHead>KYC Status</TableHead>
-                    <TableHead>Net Payout Till Date</TableHead>
-                    <TableHead>Last Updated</TableHead>
-                    <TableHead></TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredAffiliates.map((affiliate) => (
-                    <TableRow key={affiliate.id}>
-                      <TableCell className="font-medium">{affiliate.id}</TableCell>
-                      <TableCell>{affiliate.name}</TableCell>
-                      <TableCell>{affiliate.phone}</TableCell>
-                      <TableCell>{getStatusBadge(affiliate.kycStatus)}</TableCell>
-                      <TableCell>{affiliate.netPayout}</TableCell>
-                      <TableCell>{affiliate.lastUpdated}</TableCell>
-                      <TableCell>
-                        <Button 
-                          size="sm" 
-                          variant="ghost"
-                          onClick={() => handleViewAffiliate(affiliate.id)}
-                          className="flex items-center"
-                        >
-                          <ExternalLink className="h-4 w-4 mr-1" />
-                          View
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                  {filteredAffiliates.length === 0 && (
+            <div className="overflow-x-auto -mx-4 sm:mx-0">
+              <div className="min-w-full inline-block align-middle">
+                <Table>
+                  <TableHeader>
                     <TableRow>
-                      <TableCell colSpan={7} className="text-center py-6 text-gray-500">
-                        No affiliates found matching your search.
-                      </TableCell>
+                      <TableHead className="min-w-[120px]">Affiliate ID</TableHead>
+                      <TableHead className="min-w-[120px]">Name</TableHead>
+                      <TableHead className="min-w-[140px] hidden sm:table-cell">Phone</TableHead>
+                      <TableHead className="min-w-[100px]">KYC Status</TableHead>
+                      <TableHead className="min-w-[150px] hidden md:table-cell">Net Payout Till Date</TableHead>
+                      <TableHead className="min-w-[120px] hidden lg:table-cell">Last Updated</TableHead>
+                      <TableHead className="min-w-[80px]"></TableHead>
                     </TableRow>
-                  )}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredAffiliates.map((affiliate) => (
+                      <TableRow key={affiliate.id}>
+                        <TableCell className="font-medium">{affiliate.id}</TableCell>
+                        <TableCell>
+                          <div>
+                            <div className="font-medium">{affiliate.name}</div>
+                            <div className="text-sm text-gray-500 sm:hidden">{affiliate.phone}</div>
+                          </div>
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell">{affiliate.phone}</TableCell>
+                        <TableCell>{getStatusBadge(affiliate.kycStatus)}</TableCell>
+                        <TableCell className="hidden md:table-cell">{affiliate.netPayout}</TableCell>
+                        <TableCell className="hidden lg:table-cell">{affiliate.lastUpdated}</TableCell>
+                        <TableCell>
+                          <Button 
+                            size="sm" 
+                            variant="ghost"
+                            onClick={() => handleViewAffiliate(affiliate.id)}
+                            className="flex items-center text-xs sm:text-sm"
+                          >
+                            <ExternalLink className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                            <span className="hidden sm:inline">View</span>
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                    {filteredAffiliates.length === 0 && (
+                      <TableRow>
+                        <TableCell colSpan={7} className="text-center py-6 text-gray-500">
+                          No affiliates found matching your search.
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
             </div>
           </CardContent>
         </Card>
