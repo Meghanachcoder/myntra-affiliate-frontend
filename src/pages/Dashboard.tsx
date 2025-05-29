@@ -85,12 +85,18 @@ const Dashboard = () => {
         onLogout={handleLogout}
       />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-          <TabsList className="bg-white shadow-sm rounded-md">
-            <TabsTrigger value="home">Dashboard</TabsTrigger>
-            <TabsTrigger value="invoices">Invoices</TabsTrigger>
-            <TabsTrigger value="kyc">KYC Details</TabsTrigger>
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6 sm:space-y-8">
+          <TabsList className="bg-white shadow-sm rounded-md w-full grid grid-cols-3 h-auto p-1">
+            <TabsTrigger value="home" className="text-xs sm:text-sm py-2 px-2 sm:px-3">
+              Dashboard
+            </TabsTrigger>
+            <TabsTrigger value="invoices" className="text-xs sm:text-sm py-2 px-2 sm:px-3">
+              Invoices
+            </TabsTrigger>
+            <TabsTrigger value="kyc" className="text-xs sm:text-sm py-2 px-2 sm:px-3">
+              KYC Details
+            </TabsTrigger>
           </TabsList>
           
           {/* Dashboard Tab */}
