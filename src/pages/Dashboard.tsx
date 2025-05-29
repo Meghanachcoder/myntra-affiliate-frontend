@@ -4,6 +4,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 
 // Import our new components
+import DashboardHeader from '@/components/dashboard/DashboardHeader';
 import DashboardTabContent from '@/components/dashboard/DashboardTabContent';
 import AllInvoicesTab from '@/components/dashboard/AllInvoicesTab';
 import KycDetailsTab from '@/components/dashboard/KycDetailsTab';
@@ -78,6 +79,11 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <DashboardHeader 
+        affiliateId="MYNTRA123"
+        onLogout={handleLogout}
+      />
+      
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6 sm:space-y-8">
           <TabsList className="bg-white shadow-sm rounded-md w-full grid grid-cols-3 h-auto p-1">
