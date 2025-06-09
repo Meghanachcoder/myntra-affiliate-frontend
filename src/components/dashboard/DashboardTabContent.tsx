@@ -10,12 +10,14 @@ type Invoice = {
   date: string;
   amount: string;
   status: string;
+  referenceNumber?: string | null;
 };
 
 type DashboardTabContentProps = {
   kycStatus: {
     status: string;
     date: string;
+    requestDate: string;
   };
   payoutInfo: {
     netPayout: string;
@@ -40,6 +42,7 @@ const DashboardTabContent = ({
         <KycStatusCard 
           status={kycStatus.status}
           date={kycStatus.date}
+          requestDate={kycStatus.requestDate}
         />
         
         <PayoutCard

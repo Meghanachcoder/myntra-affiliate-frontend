@@ -6,9 +6,10 @@ import { Check, Clock, AlertTriangle } from 'lucide-react';
 type KycStatusProps = {
   status: string;
   date: string;
+  requestDate: string;
 };
 
-const KycStatusCard = ({ status, date }: KycStatusProps) => {
+const KycStatusCard = ({ status, date, requestDate }: KycStatusProps) => {
   const getStatusBadge = (status: string) => {
     if (status === 'Verified') {
       return (
@@ -38,9 +39,14 @@ const KycStatusCard = ({ status, date }: KycStatusProps) => {
           <h2 className="text-lg font-medium">KYC Status</h2>
           {getStatusBadge(status)}
         </div>
-        <p className="text-sm text-gray-500">
-          Last updated: {date}
-        </p>
+        <div className="space-y-2">
+          <p className="text-sm text-gray-500">
+            Request submitted: {requestDate}
+          </p>
+          <p className="text-sm text-gray-500">
+            Last updated: {date}
+          </p>
+        </div>
       </CardContent>
     </Card>
   );
