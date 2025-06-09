@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
@@ -18,6 +19,7 @@ const Dashboard = () => {
   const kycStatus = {
     status: 'Pending', // Could be 'Pending', 'Verified', 'Rejected'
     date: '15 May, 2025',
+    requestDate: '15 May, 2025',
     requestData: {
       submittedOn: '15 May, 2025',
       idType: 'PAN',
