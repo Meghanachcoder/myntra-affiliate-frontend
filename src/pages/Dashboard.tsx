@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
@@ -15,50 +14,28 @@ const Dashboard = () => {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('home');
   
-  // Mock data with new payment statuses
+  // Mock data
   const kycStatus = {
     status: 'Pending', // Could be 'Pending', 'Verified', 'Rejected'
     date: '15 May, 2025',
-    requestDate: '15 May, 2025'
+    requestData: {
+      submittedOn: '15 May, 2025',
+      idType: 'PAN',
+      idNumber: 'ABCDE1234F',
+      bankAccount: '•••••••789',
+      ifscCode: 'SBIN0001234',
+      accountHolder: 'John Doe'
+    }
   };
   
   const payoutInfo = {
-    netPayout: '₹47,800',
-    lastPayout: '₹8,200',
-    lastPayoutDate: '10 May, 2025'
+    netPayout: '₹0',
+    lastPayout: '₹0',
+    lastPayoutDate: 'No payouts yet'
   };
   
-  // Updated invoices with new statuses and reference numbers
-  const invoices = [
-    { 
-      id: 'INV001', 
-      date: '10 May, 2025', 
-      amount: '₹8,200', 
-      status: 'Paid',
-      referenceNumber: 'REF001234567'
-    },
-    { 
-      id: 'INV002', 
-      date: '05 May, 2025', 
-      amount: '₹9,600', 
-      status: 'Initiated',
-      referenceNumber: null
-    },
-    { 
-      id: 'INV003', 
-      date: '28 Apr, 2025', 
-      amount: '₹12,500', 
-      status: 'Payment Due',
-      referenceNumber: null
-    },
-    { 
-      id: 'INV004', 
-      date: '15 Apr, 2025', 
-      amount: '₹17,500', 
-      status: 'Paid',
-      referenceNumber: 'REF001234568'
-    }
-  ];
+  // Empty invoices array to show the NoInvoices component
+  const invoices = [];
   
   const kycDetails = {
     idType: 'PAN',
