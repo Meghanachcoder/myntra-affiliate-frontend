@@ -31,13 +31,49 @@ const Dashboard = () => {
   };
   
   const payoutInfo = {
-    netPayout: '₹0',
-    lastPayout: '₹0',
-    lastPayoutDate: 'No payouts yet'
+    netPayout: '₹12,450',
+    lastPayout: '₹3,200',
+    lastPayoutDate: '28 April, 2025'
   };
   
-  // Empty invoices array to show the NoInvoices component
-  const invoices = [];
+  // Sample invoices data
+  const invoices = [
+    {
+      id: 'INV-001',
+      date: '15 May, 2025',
+      amount: '₹2,500',
+      status: 'Paid',
+      referenceNumber: 'REF123456789'
+    },
+    {
+      id: 'INV-002',
+      date: '10 May, 2025',
+      amount: '₹1,800',
+      status: 'Initiated',
+      referenceNumber: 'REF987654321'
+    },
+    {
+      id: 'INV-003',
+      date: '5 May, 2025',
+      amount: '₹3,200',
+      status: 'Paid',
+      referenceNumber: 'REF456789123'
+    },
+    {
+      id: 'INV-004',
+      date: '28 April, 2025',
+      amount: '₹1,950',
+      status: 'Payment Due',
+      referenceNumber: null
+    },
+    {
+      id: 'INV-005',
+      date: '25 April, 2025',
+      amount: '₹2,750',
+      status: 'Paid',
+      referenceNumber: 'REF321654987'
+    }
+  ];
   
   const kycDetails = {
     idType: 'PAN',
