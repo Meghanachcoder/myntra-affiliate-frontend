@@ -11,7 +11,7 @@ const MyntraLogo: React.FC<MyntraLogoProps> = ({ className = "" }) => {
       <img 
         src="/lovable-uploads/24d05862-1b11-4d48-9bc3-cb3c86675652.png" 
         alt="Ultimate Glam Logo" 
-        className="h-24 w-auto object-contain"
+        className="h-12 w-auto object-contain"
       />
     </div>
   );
