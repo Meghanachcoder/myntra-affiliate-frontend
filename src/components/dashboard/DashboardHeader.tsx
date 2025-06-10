@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { LogOut } from 'lucide-react';
@@ -15,7 +14,7 @@ const DashboardHeader = ({ affiliateId, onLogout }: DashboardHeaderProps) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
         <div className="flex flex-col space-y-3 sm:space-y-0 sm:flex-row sm:justify-between sm:items-center">
           <div className="flex items-center justify-between sm:justify-start">
-            <MyntraLogo className="h-6 sm:h-8 w-auto" />
+            <MyntraLogo className="h-6 sm:h-8 w-auto" size="small" />
             <Button 
               variant="ghost" 
               size="sm"
