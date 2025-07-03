@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { useToast } from '@/hooks/use-toast';
 import { LogOut, Search, Check, Clock, AlertTriangle, UserCheck, ExternalLink } from 'lucide-react';
 import MyntraLogo from '@/components/MyntraLogo';
@@ -13,6 +14,8 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   // Mock data for affiliates - removed pendingPayout
   const affiliates = [
@@ -99,6 +102,20 @@ const AdminDashboard = () => {
     affiliate.phone.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const totalPages = Math.ceil(filteredAffiliates.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentAffiliates = filteredAffiliates.slice(startIndex, endIndex);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  // Reset to first page when search changes
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -155,7 +172,7 @@ const AdminDashboard = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredAffiliates.map((affiliate) => (
+                    {currentAffiliates.map((affiliate) => (
                       <TableRow key={affiliate.id}>
                         <TableCell className="font-medium">{affiliate.id}</TableCell>
                         <TableCell>
@@ -181,7 +198,7 @@ const AdminDashboard = () => {
                         </TableCell>
                       </TableRow>
                     ))}
-                    {filteredAffiliates.length === 0 && (
+                    {currentAffiliates.length === 0 && (
                       <TableRow>
                         <TableCell colSpan={7} className="text-center py-6 text-gray-500">
                           No affiliates found matching your search.
@@ -192,6 +209,51 @@ const AdminDashboard = () => {
                 </Table>
               </div>
             </div>
+
+            {totalPages > 1 && (
+              <div className="mt-6">
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious 
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          if (currentPage > 1) handlePageChange(currentPage - 1);
+                        }}
+                        className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
+                      />
+                    </PaginationItem>
+                    
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                      <PaginationItem key={page}>
+                        <PaginationLink
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handlePageChange(page);
+                          }}
+                          isActive={currentPage === page}
+                        >
+                          {page}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))}
+                    
+                    <PaginationItem>
+                      <PaginationNext 
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          if (currentPage < totalPages) handlePageChange(currentPage + 1);
+                        }}
+                        className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
+            )}
           </CardContent>
         </Card>
       </main>

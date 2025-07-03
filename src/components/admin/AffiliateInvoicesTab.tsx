@@ -1,8 +1,9 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { FileText } from 'lucide-react';
 
 type Invoice = {
@@ -18,6 +19,18 @@ type AffiliateInvoicesTabProps = {
 };
 
 const AffiliateInvoicesTab = ({ invoices, onDownloadInvoice }: AffiliateInvoicesTabProps) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  const totalPages = Math.ceil(invoices.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentInvoices = invoices.slice(startIndex, endIndex);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
   return (
     <Card>
       <CardContent className="p-4 sm:p-6">
@@ -36,7 +49,7 @@ const AffiliateInvoicesTab = ({ invoices, onDownloadInvoice }: AffiliateInvoices
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {invoices.map((invoice) => (
+                {currentInvoices.map((invoice) => (
                   <TableRow key={invoice.id}>
                     <TableCell className="font-medium">
                       <div>
@@ -74,6 +87,51 @@ const AffiliateInvoicesTab = ({ invoices, onDownloadInvoice }: AffiliateInvoices
             </Table>
           </div>
         </div>
+
+        {totalPages > 1 && (
+          <div className="mt-6">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious 
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (currentPage > 1) handlePageChange(currentPage - 1);
+                    }}
+                    className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
+                  />
+                </PaginationItem>
+                
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <PaginationItem key={page}>
+                    <PaginationLink
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handlePageChange(page);
+                      }}
+                      isActive={currentPage === page}
+                    >
+                      {page}
+                    </PaginationLink>
+                  </PaginationItem>
+                ))}
+                
+                <PaginationItem>
+                  <PaginationNext 
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (currentPage < totalPages) handlePageChange(currentPage + 1);
+                    }}
+                    className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

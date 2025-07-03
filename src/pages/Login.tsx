@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { useNavigate, useSearchParams, Link } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import InputField from '@/components/forms/InputField';
@@ -196,12 +196,6 @@ const Login = () => {
           error={errors.phone}
           required
         />
-        
-        <div className="flex justify-end">
-          <Link to="/signup" className="text-sm text-myntra-purple hover:underline">
-            Don't have an account? Sign up
-          </Link>
-        </div>
         
         <Button 
           type="submit" 
