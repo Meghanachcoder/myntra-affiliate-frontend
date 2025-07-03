@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
@@ -36,7 +35,7 @@ const Dashboard = () => {
     lastPayoutDate: '28 April, 2025'
   };
   
-  // Sample invoices data
+  // Expanded sample invoices data with more entries
   const invoices = [
     {
       id: 'INV-001',
@@ -72,6 +71,97 @@ const Dashboard = () => {
       amount: '₹2,750',
       status: 'Paid',
       referenceNumber: 'REF321654987'
+    },
+    {
+      id: 'INV-006',
+      date: '20 April, 2025',
+      amount: '₹4,100',
+      status: 'Paid',
+      referenceNumber: 'REF789123456'
+    },
+    {
+      id: 'INV-007',
+      date: '18 April, 2025',
+      amount: '₹2,300',
+      status: 'Initiated',
+      referenceNumber: 'REF654321987'
+    },
+    {
+      id: 'INV-008',
+      date: '15 April, 2025',
+      amount: '₹1,650',
+      status: 'Payment Due',
+      referenceNumber: null
+    },
+    {
+      id: 'INV-009',
+      date: '12 April, 2025',
+      amount: '₹3,800',
+      status: 'Paid',
+      referenceNumber: 'REF147258369'
+    },
+    {
+      id: 'INV-010',
+      date: '8 April, 2025',
+      amount: '₹2,900',
+      status: 'Paid',
+      referenceNumber: 'REF963852741'
+    },
+    {
+      id: 'INV-011',
+      date: '5 April, 2025',
+      amount: '₹1,200',
+      status: 'Initiated',
+      referenceNumber: 'REF852741963'
+    },
+    {
+      id: 'INV-012',
+      date: '2 April, 2025',
+      amount: '₹2,450',
+      status: 'Payment Due',
+      referenceNumber: null
+    },
+    {
+      id: 'INV-013',
+      date: '28 March, 2025',
+      amount: '₹3,600',
+      status: 'Paid',
+      referenceNumber: 'REF741852963'
+    },
+    {
+      id: 'INV-014',
+      date: '25 March, 2025',
+      amount: '₹1,750',
+      status: 'Paid',
+      referenceNumber: 'REF369741852'
+    },
+    {
+      id: 'INV-015',
+      date: '22 March, 2025',
+      amount: '₹2,200',
+      status: 'Initiated',
+      referenceNumber: 'REF258963147'
+    },
+    {
+      id: 'INV-016',
+      date: '18 March, 2025',
+      amount: '₹4,500',
+      status: 'Paid',
+      referenceNumber: 'REF159357486'
+    },
+    {
+      id: 'INV-017',
+      date: '15 March, 2025',
+      amount: '₹1,900',
+      status: 'Payment Due',
+      referenceNumber: null
+    },
+    {
+      id: 'INV-018',
+      date: '12 March, 2025',
+      amount: '₹3,100',
+      status: 'Paid',
+      referenceNumber: 'REF753951486'
     }
   ];
   

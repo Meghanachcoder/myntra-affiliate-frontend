@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
@@ -17,7 +16,7 @@ const AdminDashboard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  // Mock data for affiliates - removed pendingPayout
+  // Expanded mock data for affiliates
   const affiliates = [
     {
       id: 'MYNTRA123',
@@ -58,6 +57,166 @@ const AdminDashboard = () => {
       kycStatus: 'Verified',
       netPayout: '₹61,300',
       lastUpdated: '11 May, 2025'
+    },
+    {
+      id: 'MYNTRA987',
+      name: 'Emily Davis',
+      phone: '+91 9876543215',
+      kycStatus: 'Pending',
+      netPayout: '₹23,700',
+      lastUpdated: '13 May, 2025'
+    },
+    {
+      id: 'MYNTRA147',
+      name: 'Robert Wilson',
+      phone: '+91 9876543216',
+      kycStatus: 'Verified',
+      netPayout: '₹76,500',
+      lastUpdated: '9 May, 2025'
+    },
+    {
+      id: 'MYNTRA258',
+      name: 'Lisa Anderson',
+      phone: '+91 9876543217',
+      kycStatus: 'Rejected',
+      netPayout: '₹8,900',
+      lastUpdated: '8 May, 2025'
+    },
+    {
+      id: 'MYNTRA369',
+      name: 'James Taylor',
+      phone: '+91 9876543218',
+      kycStatus: 'Verified',
+      netPayout: '₹54,200',
+      lastUpdated: '7 May, 2025'
+    },
+    {
+      id: 'MYNTRA741',
+      name: 'Maria Garcia',
+      phone: '+91 9876543219',
+      kycStatus: 'Pending',
+      netPayout: '₹41,800',
+      lastUpdated: '6 May, 2025'
+    },
+    {
+      id: 'MYNTRA852',
+      name: 'Thomas Martinez',
+      phone: '+91 9876543220',
+      kycStatus: 'Verified',
+      netPayout: '₹67,300',
+      lastUpdated: '5 May, 2025'
+    },
+    {
+      id: 'MYNTRA963',
+      name: 'Jennifer Rodriguez',
+      phone: '+91 9876543221',
+      kycStatus: 'Verified',
+      netPayout: '₹92,100',
+      lastUpdated: '4 May, 2025'
+    },
+    {
+      id: 'MYNTRA159',
+      name: 'Christopher Lee',
+      phone: '+91 9876543222',
+      kycStatus: 'Pending',
+      netPayout: '₹19,600',
+      lastUpdated: '3 May, 2025'
+    },
+    {
+      id: 'MYNTRA357',
+      name: 'Amanda White',
+      phone: '+91 9876543223',
+      kycStatus: 'Rejected',
+      netPayout: '₹12,400',
+      lastUpdated: '2 May, 2025'
+    },
+    {
+      id: 'MYNTRA486',
+      name: 'Daniel Harris',
+      phone: '+91 9876543224',
+      kycStatus: 'Verified',
+      netPayout: '₹83,700',
+      lastUpdated: '1 May, 2025'
+    },
+    {
+      id: 'MYNTRA624',
+      name: 'Michelle Clark',
+      phone: '+91 9876543225',
+      kycStatus: 'Verified',
+      netPayout: '₹58,900',
+      lastUpdated: '30 April, 2025'
+    },
+    {
+      id: 'MYNTRA735',
+      name: 'Kevin Lewis',
+      phone: '+91 9876543226',
+      kycStatus: 'Pending',
+      netPayout: '₹27,300',
+      lastUpdated: '29 April, 2025'
+    },
+    {
+      id: 'MYNTRA846',
+      name: 'Nicole Young',
+      phone: '+91 9876543227',
+      kycStatus: 'Verified',
+      netPayout: '₹71,500',
+      lastUpdated: '28 April, 2025'
+    },
+    {
+      id: 'MYNTRA957',
+      name: 'Steven King',
+      phone: '+91 9876543228',
+      kycStatus: 'Rejected',
+      netPayout: '₹6,800',
+      lastUpdated: '27 April, 2025'
+    },
+    {
+      id: 'MYNTRA168',
+      name: 'Rachel Wright',
+      phone: '+91 9876543229',
+      kycStatus: 'Verified',
+      netPayout: '₹95,400',
+      lastUpdated: '26 April, 2025'
+    },
+    {
+      id: 'MYNTRA279',
+      name: 'Brian Lopez',
+      phone: '+91 9876543230',
+      kycStatus: 'Pending',
+      netPayout: '₹34,200',
+      lastUpdated: '25 April, 2025'
+    },
+    {
+      id: 'MYNTRA380',
+      name: 'Laura Hill',
+      phone: '+91 9876543231',
+      kycStatus: 'Verified',
+      netPayout: '₹62,800',
+      lastUpdated: '24 April, 2025'
+    },
+    {
+      id: 'MYNTRA491',
+      name: 'Mark Scott',
+      phone: '+91 9876543232',
+      kycStatus: 'Verified',
+      netPayout: '₹78,100',
+      lastUpdated: '23 April, 2025'
+    },
+    {
+      id: 'MYNTRA502',
+      name: 'Jessica Green',
+      phone: '+91 9876543233',
+      kycStatus: 'Pending',
+      netPayout: '₹16,700',
+      lastUpdated: '22 April, 2025'
+    },
+    {
+      id: 'MYNTRA613',
+      name: 'Paul Adams',
+      phone: '+91 9876543234',
+      kycStatus: 'Verified',
+      netPayout: '₹87,300',
+      lastUpdated: '21 April, 2025'
     }
   ];
 
