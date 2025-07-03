@@ -46,10 +46,24 @@ const AdminAffiliateDetails = () => {
       status: 'Pending'
     },
     invoices: [
-      { id: 'INV001', date: '10 May, 2025', amount: '₹8,200', status: 'Paid' },
-      { id: 'INV002', date: '05 May, 2025', amount: '₹9,600', status: 'Paid' },
-      { id: 'INV003', date: '28 Apr, 2025', amount: '₹12,500', status: 'Processing' },
-      { id: 'INV004', date: '15 Apr, 2025', amount: '₹17,500', status: 'Paid' }
+      { id: 'INV001', date: '15 May, 2025', amount: '₹2,500', status: 'Paid' },
+      { id: 'INV002', date: '12 May, 2025', amount: '₹1,800', status: 'Processing' },
+      { id: 'INV003', date: '10 May, 2025', amount: '₹8,200', status: 'Paid' },
+      { id: 'INV004', date: '8 May, 2025', amount: '₹3,400', status: 'Paid' },
+      { id: 'INV005', date: '5 May, 2025', amount: '₹9,600', status: 'Paid' },
+      { id: 'INV006', date: '3 May, 2025', amount: '₹2,100', status: 'Processing' },
+      { id: 'INV007', date: '1 May, 2025', amount: '₹4,700', status: 'Paid' },
+      { id: 'INV008', date: '28 Apr, 2025', amount: '₹12,500', status: 'Processing' },
+      { id: 'INV009', date: '26 Apr, 2025', amount: '₹3,800', status: 'Paid' },
+      { id: 'INV010', date: '24 Apr, 2025', amount: '₹6,200', status: 'Paid' },
+      { id: 'INV011', date: '22 Apr, 2025', amount: '₹1,900', status: 'Processing' },
+      { id: 'INV012', date: '20 Apr, 2025', amount: '₹5,300', status: 'Paid' },
+      { id: 'INV013', date: '18 Apr, 2025', amount: '₹7,600', status: 'Paid' },
+      { id: 'INV014', date: '15 Apr, 2025', amount: '₹17,500', status: 'Paid' },
+      { id: 'INV015', date: '13 Apr, 2025', amount: '₹2,800', status: 'Processing' },
+      { id: 'INV016', date: '11 Apr, 2025', amount: '₹4,100', status: 'Paid' },
+      { id: 'INV017', date: '9 Apr, 2025', amount: '₹6,700', status: 'Paid' },
+      { id: 'INV018', date: '7 Apr, 2025', amount: '₹3,200', status: 'Processing' }
     ]
   };
 
