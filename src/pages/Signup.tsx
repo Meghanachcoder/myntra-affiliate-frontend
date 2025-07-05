@@ -6,9 +6,14 @@ import AuthLayout from '@/components/layouts/AuthLayout';
 import InputField from '@/components/forms/InputField';
 import { useToast } from '@/components/ui/use-toast';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
+import { useSignupMutation, useVerifyOtpMutation } from '@/lib/api/authApi';
+
+
 
 const Signup = () => {
   const [searchParams] = useSearchParams();
+  const [signup] = useSignupMutation();
+  const [verifyOtp] = useVerifyOtpMutation();
   const affiliateId = searchParams.get('affiliateId') || 'MYNTRA123';
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -27,7 +32,7 @@ const Signup = () => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     
-    // Clear error when user starts typing
+    
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
@@ -59,48 +64,103 @@ const Signup = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSendOtp = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (validateDetails()) {
-      setIsLoading(true);
-      // Simulate API call to send OTP
-      setTimeout(() => {
-        setIsLoading(false);
-        toast({
-          title: "OTP Sent",
-          description: "Please check your phone for the verification code",
-        });
-        setStep('otp');
-      }, 1000);
-    }
-  };
+  const handleSendOtp = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-  const handleVerifyOtp = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (validateOtp()) {
-      setIsLoading(true);
-      // Simulate API call to verify OTP
-      setTimeout(() => {
-        setIsLoading(false);
-        console.log('Form submitted:', formData);
-        toast({
-          title: "Account created",
-          description: "Your affiliate account has been created successfully.",
-        });
-        // Redirect to KYC page
-        navigate('/kyc', { state: { mobile: formData.mobile } });
-      }, 1000);
-    }
-  };
+  if (validateDetails()) {
+    setIsLoading(true);
+    try {
+      const response = await signup({
+        mobile: formData.mobile,
+        affiliateId: formData.affiliateId,
+      }).unwrap();
 
-  const handleResendOtp = () => {
+      
+      if (response.success === false) {
+        toast({
+          title: 'Signup Failed',
+          description: response.msg || 'Something went wrong while signing up.',
+          variant: 'destructive',
+        });
+        return; 
+      }
+
+      
+      toast({
+        title: 'OTP Sent',
+        description: response.msg || 'Please check your phone for the verification code.',
+      });
+
+      setStep('otp');
+    } catch (error: any) {
+      toast({
+        title: 'Signup Error',
+        description: error?.data?.message || 'Something went wrong.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }
+};
+
+
+  const handleVerifyOtp = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  if (validateOtp()) {
+    setIsLoading(true);
+    try {
+      const response = await verifyOtp({
+        mobile: formData.mobile,
+        otp: formData.otp,
+      }).unwrap();
+
+      
+      if (response?.token) {
+        localStorage.setItem('auth_token', response.token);
+      }
+
+      toast({
+        title: 'Account Created',
+        description: 'Your affiliate account has been verified successfully.',
+      });
+
+      
+      navigate('/kyc', { state: { mobile: formData.mobile } });
+
+    } catch (error: any) {
+      toast({
+        title: 'Verification Failed',
+        description: error?.data?.message || 'Invalid OTP or mobile number.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }
+};
+
+ const handleResendOtp = async () => {
+  try {
+    await signup({
+      mobile: formData.mobile,
+      affiliateId: formData.affiliateId,
+    }).unwrap();
+
     toast({
-      title: "OTP Resent",
-      description: "A new verification code has been sent to your phone",
+      title: 'OTP Resent',
+      description: 'A new OTP has been sent to your phone.',
     });
-  };
+  } catch (error: any) {
+    toast({
+      title: 'Failed to Resend OTP',
+      description: error?.data?.message || 'Please try again later.',
+      variant: 'destructive',
+    });
+  }
+};
+
 
   if (step === 'otp') {
     return (

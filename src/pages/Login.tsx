@@ -7,6 +7,7 @@ import InputField from '@/components/forms/InputField';
 import AuthLayout from '@/components/layouts/AuthLayout';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { z } from 'zod';
+import { useLoginSendOtpMutation, useLoginVerifyOtpMutation } from '@/lib/api/authApi';
 
 const phoneSchema = z.object({
   phone: z.string().min(10, "Phone number must be at least 10 digits"),
@@ -21,6 +22,8 @@ type OtpFormData = z.infer<typeof otpSchema>;
 
 const Login = () => {
   const navigate = useNavigate();
+  const [sendOtp] = useLoginSendOtpMutation();
+  const [verifyOtp] = useLoginVerifyOtpMutation();
   const [searchParams] = useSearchParams();
   const affiliateId = searchParams.get('affiliateId') || '';
   
@@ -71,49 +74,99 @@ const Login = () => {
     setPhoneData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSendOtp = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validatePhone()) return;
+  const handleSendOtp = async (e: React.FormEvent) => {
+  e.preventDefault();
+  if (!validatePhone()) return;
 
-    setIsLoading(true);
+  setIsLoading(true);
+  try {
+    await sendOtp(phoneData.phone).unwrap();
+    toast({
+      title: "OTP Sent",
+      description: "Please check your phone for the verification code",
+    });
+    setStep('otp');
+  } catch (error: any) {
+    toast({
+      title: "Failed to Send OTP",
+      description: error?.data?.message || "Something went wrong",
+      variant: "destructive",
+    });
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+
+ const handleVerifyOtp = async (e: React.FormEvent) => {
+  e.preventDefault();
+  if (!validateOtp()) return;
+
+  setIsLoading(true);
+  try {
+    const response = await verifyOtp({
+      mobile: phoneData.phone,
+      otp: otpData.otp,
+    }).unwrap();
+
     
-    // Simulate API call to send OTP
-    setTimeout(() => {
-      setIsLoading(false);
-      toast({
-        title: "OTP Sent",
-        description: "Please check your phone for the verification code",
-      });
-      setStep('otp');
-    }, 1000);
-  };
+    if (response?.token) {
+      localStorage.setItem('auth_token', response.token);
+    }
 
-  const handleVerifyOtp = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validateOtp()) return;
+    toast({
+      title: "Login Successful",
+      description: "Welcome back to your Myntra Affiliate account",
+    });
 
-    setIsLoading(true);
     
-    // Simulate API call to verify OTP
-    setTimeout(() => {
-      localStorage.setItem('isAuthenticated', 'true');
-      
-      setIsLoading(false);
-      toast({
-        title: "Login Successful",
-        description: "Welcome back to your Myntra Affiliate account",
-      });
-      
+    if (response.kycStatus === 'completed') {
       navigate('/dashboard');
-    }, 1000);
-  };
+    } else {
+      navigate('/kyc', { state: { mobile: phoneData.phone } });
+    }
 
-  const handleResendOtp = () => {
+  } catch (error: any) {
+    toast({
+      title: "OTP Verification Failed",
+      description: error?.data?.message || "Invalid OTP or mobile number.",
+      variant: "destructive",
+    });
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+
+  const handleResendOtp = async () => {
+  if (!phoneData.phone) {
+    toast({
+      title: "Missing Phone Number",
+      description: "Please enter your phone number first.",
+      variant: "destructive",
+    });
+    return;
+  }
+
+  setIsLoading(true);
+  try {
+    await sendOtp(phoneData.phone).unwrap();
     toast({
       title: "OTP Resent",
       description: "A new verification code has been sent to your phone",
     });
-  };
+  } catch (error: any) {
+    toast({
+      title: "Failed to Resend OTP",
+      description: error?.data?.message || "Please try again later.",
+      variant: "destructive",
+    });
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+
 
   if (step === 'otp') {
     return (

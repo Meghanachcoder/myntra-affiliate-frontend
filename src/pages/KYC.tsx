@@ -6,6 +6,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AuthLayout from '@/components/layouts/AuthLayout';
 import InputField from '@/components/forms/InputField';
 import { useToast } from '@/components/ui/use-toast';
+import { useSubmitKycMutation ,useGetKycStatusQuery} from '@/lib/api/authApi';
+import { useEffect } from 'react';
+
 
 interface LocationState {
   mobile?: string;
@@ -16,7 +19,7 @@ const KYC = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const state = location.state as LocationState || {};
-  
+  const [submitKyc] = useSubmitKycMutation();
   const [activeTab, setActiveTab] = useState('pan');
   const [formData, setFormData] = useState({
     pan: '',
@@ -29,12 +32,33 @@ const KYC = () => {
   });
   
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const { data: kycData, isLoading: isCheckingKyc } = useGetKycStatusQuery();
+
+
+useEffect(() => {
+  if (kycData?.kycStatus === 'completed') {
+    toast({
+      title: 'KYC Already Submitted',
+      description: 'You have already submitted your KYC.',
+    });
+    navigate('/dashboard');
+  }
+}, [kycData, navigate, toast]);
+
+if (isCheckingKyc) {
+  return (
+    <div className="flex justify-center items-center h-screen">
+      <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-b-4 border-myntra-purple"></div>
+    </div>
+  );
+}
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     
-    // Clear error when user starts typing
+    
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
@@ -80,23 +104,40 @@ const KYC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (validateForm()) {
-      console.log('KYC submitted:', formData);
+ const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  if (validateForm()) {
+    try {
+      await submitKyc({
+        pan: formData.pan,
+        gstin: formData.gstin || undefined,
+        accountNumber: formData.accountNumber,
+        confirmAccountNumber: formData.confirmAccountNumber,
+        ifsc: formData.ifsc,
+        accountName: formData.accountName,
+      }).unwrap();
+
       toast({
-        title: "KYC Submitted",
-        description: "Your KYC details have been submitted successfully.",
+        title: 'KYC Submitted',
+        description: 'Your KYC details have been submitted successfully.',
       });
-      // Redirect to dashboard page instead of KYC success
+
       navigate('/dashboard');
+    } catch (error: any) {
+      toast({
+        title: 'Submission Failed',
+        description: error?.data?.message || 'Something went wrong.',
+        variant: 'destructive',
+      });
     }
-  };
+  }
+};
+
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);
-    // Clear any errors related to the previous tab
+    
     const newErrors = { ...errors };
     if (value === 'pan') {
       delete newErrors.gstin;
