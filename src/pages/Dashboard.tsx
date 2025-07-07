@@ -7,18 +7,18 @@ import DashboardHeader from '@/components/dashboard/DashboardHeader';
 import DashboardTabContent from '@/components/dashboard/DashboardTabContent';
 import AllInvoicesTab from '@/components/dashboard/AllInvoicesTab';
 import KycDetailsTab from '@/components/dashboard/KycDetailsTab';
-
+import { useGetInvoicesQuery ,useDownloadInvoiceMutation } from '@/lib/api/invoiceApi';
 import { useGetDashboardQuery } from '@/lib/api/dashboardApi';
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('home');
-
-  
   const mobile = localStorage.getItem('user_mobile') || '';
+const { data: invoices = [] } = useGetInvoicesQuery(mobile);
+const [downloadInvoice] = useDownloadInvoiceMutation();
+const { data, isLoading, error } = useGetDashboardQuery(mobile);
 
-  const { data, isLoading, error } = useGetDashboardQuery(mobile);
 
   useEffect(() => {
     if (error) {
@@ -36,16 +36,27 @@ const Dashboard = () => {
     navigate('/login');
   };
 
-  const handleDownloadInvoice = (invoiceId: string) => {
+  const handleDownloadInvoice = async (invoiceId: string) => {
+  try {
+    const blob = await downloadInvoice(invoiceId).unwrap();
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `invoice-${invoiceId}.pdf`;
+    link.click();
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
     toast({
-      title: 'Invoice Download',
-      description: `Invoice ${invoiceId} download started.`,
+      title: 'Download failed',
+      description: 'Unable to download the invoice. Please try again later.',
+      variant: 'destructive',
     });
-  };
+  }
+};
 
   if (isLoading || !data) return <p className="text-center py-8">Loading dashboard...</p>;
 
-  const { affiliateId, kycStatus, payout_info, invoices } = data.result;
+  const { affiliateId, kycStatus, payout_info } = data.result;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -67,6 +78,7 @@ const Dashboard = () => {
 
           <TabsContent value="home">
             <DashboardTabContent
+            invoices={invoices}
               kycStatus={{
                 status: kycStatus.status,
                 requestDate: new Date(kycStatus.request_date).toLocaleDateString(),
