@@ -1,4 +1,3 @@
-// src/lib/api/baseQueryWithInterceptor.ts
 import { fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 const rawBaseQuery = fetchBaseQuery({

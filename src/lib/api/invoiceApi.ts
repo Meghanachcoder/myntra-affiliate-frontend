@@ -17,12 +17,12 @@ export const invoiceApi = createApi({
       query: (mobile) => `dashboard/${mobile}/invoices`,
     }),
 
-    // You can use mutation for triggering a download
+    
     downloadInvoice: builder.mutation<Blob, string>({
       query: (invoiceId) => ({
         url: `invoice/${invoiceId}/download`,
         method: 'GET',
-        responseHandler: async (response) => response.blob(), // handle binary
+        responseHandler: async (response) => response.blob(), 
       }),
     }),
   }),
