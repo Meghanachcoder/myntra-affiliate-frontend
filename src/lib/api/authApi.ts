@@ -1,13 +1,15 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { baseQueryWithInterceptor } from './baseQueryWithInterceptor';
 
+import { ENDPOINTS } from '@/utils/endpoints';
+
 export const authApi = createApi({
   reducerPath: 'authApi',
   baseQuery: baseQueryWithInterceptor,
   endpoints: (builder) => ({
     signup: builder.mutation({
       query: (body) => ({
-        url: '/auth/signup',
+        url: ENDPOINTS.signupApi,
         method: 'POST',
         body,
       }),
@@ -20,10 +22,10 @@ export const authApi = createApi({
       }),
     }),
     loginSendOtp: builder.mutation({
-      query: (mobile) => ({
-        url: '/auth/login/send-otp',
+      query: (body) => ({
+        url: ENDPOINTS.loginApi,
         method: 'POST',
-        body: { mobile },
+        body,
       }),
     }),
     loginVerifyOtp: builder.mutation({
@@ -54,28 +56,31 @@ export const authApi = createApi({
       }),
     }),
     adminLoginVerifyOtp: builder.mutation({
-  query: (body) => ({
-    url: '/api/admin/login-verify-otp',
-    method: 'POST',
-    body,
-  }),
-}), 
-getAllAffiliates: builder.query({
-  query: ({ page = 1, limit = 10, sortBy = 'created_at', sortOrder = 'ASC', search = '' }) => {
-    const params = new URLSearchParams({
-      page: String(page),
-      limit: String(limit),
-      sortBy,
-      sortOrder,
-    });
-    if (search) params.append('search', search);
+      query: (body) => ({
+        url: '/api/admin/login-verify-otp',
+        method: 'POST',
+        body,
+      }),
+    }),
 
-    return {
-      url: `/api/admin/affiliates?${params.toString()}`,
-      method: 'GET',
-    };
-  },
-}),
+    getAllAffiliates: builder.query({
+      query: ({ page = 1, limit = 10, sortBy = 'created_at', sortOrder = 'ASC', search = '' }) => {
+
+        const params = new URLSearchParams({
+          page: String(page),
+          limit: String(limit),
+          sortBy,
+          sortOrder,
+        });
+
+        if (search) params.append('search', search);
+
+        return {
+          url: `/api/admin/affiliates?${params.toString()}`,
+          method: 'GET',
+        };
+      },
+    }),
   }),
 });
 

@@ -1,6 +1,8 @@
 
 import React from 'react';
+
 import { Card } from "@/components/ui/card";
+
 import MyntraLogo from '../MyntraLogo';
 
 interface AuthLayoutProps {

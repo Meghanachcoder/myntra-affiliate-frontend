@@ -25,7 +25,6 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
           {...props}
           className={cn(error ? "border-red-500 focus:ring-red-500" : "")}
         />
-        {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
       </div>
     );
   }
