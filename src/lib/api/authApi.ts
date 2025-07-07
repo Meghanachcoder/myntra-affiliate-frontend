@@ -46,6 +46,36 @@ export const authApi = createApi({
         method: 'GET',
       }),
     }),
+    adminLogin: builder.mutation<any, string>({
+      query: (mobile) => ({
+        url: '/api/admin/login',
+        method: 'POST',
+        body: { mobile },
+      }),
+    }),
+    adminLoginVerifyOtp: builder.mutation({
+  query: (body) => ({
+    url: '/api/admin/login-verify-otp',
+    method: 'POST',
+    body,
+  }),
+}), 
+getAllAffiliates: builder.query({
+  query: ({ page = 1, limit = 10, sortBy = 'created_at', sortOrder = 'ASC', search = '' }) => {
+    const params = new URLSearchParams({
+      page: String(page),
+      limit: String(limit),
+      sortBy,
+      sortOrder,
+    });
+    if (search) params.append('search', search);
+
+    return {
+      url: `/api/admin/affiliates?${params.toString()}`,
+      method: 'GET',
+    };
+  },
+}),
   }),
 });
 
@@ -56,4 +86,7 @@ export const {
   useLoginVerifyOtpMutation,
   useSubmitKycMutation,
   useGetKycStatusQuery,
+  useAdminLoginMutation,
+  useAdminLoginVerifyOtpMutation,
+  useGetAllAffiliatesQuery
 } = authApi;

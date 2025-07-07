@@ -9,9 +9,12 @@ import Login from "./pages/Login";
 import KYC from "./pages/KYC";
 import KYCSuccess from "./pages/KYCSuccess";
 import Dashboard from "./pages/Dashboard";
+import AdminRegister from "./pages/AdminRegister";
+import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminAffiliateDetails from "./pages/AdminAffiliateDetails";
 import NotFound from "./pages/NotFound";
+
 
 const queryClient = new QueryClient();
 
@@ -28,6 +31,8 @@ const App = () => (
           <Route path="/kyc" element={<KYC />} />
           <Route path="/kyc-success" element={<KYCSuccess />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/admin/register" element={<AdminRegister />} />
+          <Route path="/admin/login" element={<AdminLogin/>}/>
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/affiliate/:id" element={<AdminAffiliateDetails />} />
           <Route path="*" element={<NotFound />} />
