@@ -1,62 +1,51 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi } from '@reduxjs/toolkit/query/react';
+import { baseQueryWithInterceptor } from './baseQueryWithInterceptor';
 
 export const authApi = createApi({
   reducerPath: 'authApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: '/api/auth',
-  }),
+  baseQuery: baseQueryWithInterceptor,
   endpoints: (builder) => ({
-    //Signup
     signup: builder.mutation({
-      query: (body: { affiliateId: string; mobile: string }) => ({
-        url: '/signup',
+      query: (body) => ({
+        url: '/auth/signup',
         method: 'POST',
         body,
       }),
     }),
     verifyOtp: builder.mutation({
-      query: (body: { mobile: string; otp: string | number }) => ({
-        url: '/verify-otp',
+      query: (body) => ({
+        url: '/auth/verify-otp',
         method: 'POST',
         body,
       }),
     }),
-
-    // Login
     loginSendOtp: builder.mutation({
-      query: (mobile: string) => ({
-        url: '/login/send-otp',
+      query: (mobile) => ({
+        url: '/auth/login/send-otp',
         method: 'POST',
         body: { mobile },
       }),
     }),
     loginVerifyOtp: builder.mutation({
-      query: (body: { mobile: string; otp: string | number }) => ({
-        url: '/login/verify-otp',
+      query: (body) => ({
+        url: '/auth/login/verify-otp',
         method: 'POST',
         body,
       }),
     }),
     submitKyc: builder.mutation({
-  query: (body) => ({
-    url: '/kyc/submit',
-    method: 'POST',
-    body,
-    headers: {
-      authorization: `Bearer ${localStorage.getItem('auth_token')}`, // if using token from login
-    },
-  }),
-}),
-getKycStatus: builder.query({
-  query: () => ({
-    url: '/kyc/status',
-    method: 'GET',
-    headers: {
-      authorization: `Bearer ${localStorage.getItem('auth_token')|| ''}`,
-    },
-  }),
-}),
-
+      query: (body) => ({
+        url: '/auth/kyc/submit',
+        method: 'POST',
+        body,
+      }),
+    }),
+    getKycStatus: builder.query({
+      query: () => ({
+        url: '/auth/kyc/status',
+        method: 'GET',
+      }),
+    }),
   }),
 });
 
@@ -66,5 +55,5 @@ export const {
   useLoginSendOtpMutation,
   useLoginVerifyOtpMutation,
   useSubmitKycMutation,
-  useGetKycStatusQuery
+  useGetKycStatusQuery,
 } = authApi;
