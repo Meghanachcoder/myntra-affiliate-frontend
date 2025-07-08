@@ -1,6 +1,9 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-import { signupApiCall, verifyOtpApiCall, loginApiCall, loginVerifyOtpApiCall, submitKycApiCall, getKycStatusApiCall, getDashboardApiCall, getInvoicesApiCall } from "./services";
+// import { signupApiCall, verifyOtpApiCall, loginApiCall, loginVerifyOtpApiCall, submitKycApiCall, getKycStatusApiCall, getDashboardApiCall, getInvoicesApiCall } from "./services";
+
+
+import {signupApiCall, verifyOtpApiCall, loginApiCall, loginVerifyOtpApiCall ,submitKycApiCall, getKycStatusApiCall,getDashboardApiCall,getInvoicesApiCall,getAdminAffiliatesApiCall,getAffiliateByIdApiCall,updateKycStatusApiCall,processPaymentApiCall} from "./services";
 
 
 export function useSignupMutation(options?: any) {
@@ -83,11 +86,12 @@ export function useGetDashboardQuery() {
   return useQuery<any, Error>({
     queryKey: ['getDashboard'],
     queryFn: async () => {
-      const res = await getDashboardApiCall();
+      const res = await getDashboardApiCall(); 
       return res?.data;
-    }
+    },
   });
 }
+
 
 
 export function useGetInvoicesQuery(options: {
@@ -111,8 +115,63 @@ export function useGetInvoicesQuery(options: {
     queryKey: ["getInvoices", page, limit, sortBy, sortOrder, status],
     queryFn: async () => {
       const res = await getInvoicesApiCall({ page, limit, sortBy, sortOrder, status });
-      return res?.data?.result; // as per your response format
+      return res?.data?.result; 
     },
     enabled,
+  });
+}
+
+
+export function useGetAllAdminAffiliatesQuery({
+  page = 1,
+  limit = 10,
+  sortBy = 'created_at',
+  sortOrder = 'ASC',
+  search = '',
+  enabled = true,
+}) {
+  return useQuery({
+    queryKey: ['getAllAdminAffiliates', page, limit, sortBy, sortOrder, search],
+    queryFn: async () => {
+      const res = await getAdminAffiliatesApiCall({ page, limit, sortBy, sortOrder, search });
+      return res?.data;
+    },
+    enabled,
+  });
+}
+
+
+export function useGetAffiliateByIdQuery(id: string) {
+  return useQuery({
+    queryKey: ['getAffiliateById', id],
+    queryFn: async () => {
+      const res = await getAffiliateByIdApiCall(id);
+      return res?.data;
+    },
+    enabled: !!id, 
+  });
+}
+
+export function useUpdateKycStatusMutation(options?: any) {
+  return useMutation({
+    mutationKey: ['updateKycStatus'],
+    mutationFn: async (payload: { id: string; status: string }) => {
+      const res = await updateKycStatusApiCall(payload);
+      return res?.data;
+    },
+    ...options,
+  });
+}
+
+
+
+export function useProcessPaymentMutation(options?: any) {
+  return useMutation<any, Error, string>({
+    mutationKey: ['processAffiliatePayment'],
+    mutationFn: async (affiliateId: string) => {
+      const response = await processPaymentApiCall(affiliateId);
+      return response?.data;
+    },
+    ...options,
   });
 }

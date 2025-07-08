@@ -50,7 +50,7 @@ const Signup = () => {
         }
 
         toast({ title: res?.msg || 'OTP sent successfully' });
-        setMobileNumber(values.mobile);
+        setMobileNumber(values.mobileNumber);
         setStep('otp');
       },
       onError: (err: any) => {
