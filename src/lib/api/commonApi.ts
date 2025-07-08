@@ -1,6 +1,29 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation ,useQuery} from "@tanstack/react-query";
 
-import { loginApiCall, loginVerifyOtpApiCall } from "./services";
+import {signupApiCall, verifyOtpApiCall, loginApiCall, loginVerifyOtpApiCall ,submitKycApiCall, getKycStatusApiCall,getDashboardApiCall,getInvoicesApiCall} from "./services";
+
+
+export function useSignupMutation(options?: any) {
+  return useMutation<any, Error, any>({
+    mutationKey: ['signup'],
+    mutationFn: async (payload: any) => {
+      const response = await signupApiCall(payload);
+      return response?.data;
+    },
+    ...options,
+  });
+}
+
+export function useVerifyOtpMutation(options?: any) {
+  return useMutation<any, Error, any>({
+    mutationKey: ['verifySignupOtp'],
+    mutationFn: async (payload: any) => {
+      const response = await verifyOtpApiCall(payload);
+      return response?.data;
+    },
+    ...options,
+  });
+}
 
 export function useLoginMutation(options?: any) {
   return useMutation<any, Error, any>({
@@ -30,5 +53,68 @@ export function useLoginVerifyOtpMutation(options?: any) {
       }
     },
     ...options,
+  });
+}
+
+
+export function useSubmitKycMutation(options?: any) {
+  return useMutation<any, Error, any>({
+    mutationKey: ['submitKyc'],
+    mutationFn: async (payload: any) => {
+      const response = await submitKycApiCall(payload);
+      return response?.data;
+    },
+    ...options,
+  });
+}
+
+export function useGetKycStatusQuery(options?: any) {
+  return useQuery<any, Error>({
+    queryKey: ['getKycStatus'],
+    queryFn: async () => {
+      const response = await getKycStatusApiCall();
+      return response?.data;
+    },
+    ...options,
+  });
+}
+
+export function useGetDashboardQuery({ mobile }: { mobile: string | null }) {
+  return useQuery<any, Error>({
+    queryKey: ['getDashboard', mobile],
+    queryFn: async ({ queryKey }) => {
+      const [_key, mobile] = queryKey;
+      const res = await getDashboardApiCall(mobile);
+      return res?.data;
+    },
+    enabled: !!mobile,
+  });
+}
+
+
+export function useGetInvoicesQuery(options: {
+  page?: number;
+  limit?: number;
+  sortBy?: string;
+  sortOrder?: string;
+  status?: string;
+  enabled?: boolean;
+}) {
+  const {
+    page = 1,
+    limit = 10,
+    sortBy = "created_at",
+    sortOrder = "DESC",
+    status = "paid",
+    enabled = true,
+  } = options;
+
+  return useQuery({
+    queryKey: ["getInvoices", page, limit, sortBy, sortOrder, status],
+    queryFn: async () => {
+      const res = await getInvoicesApiCall({ page, limit, sortBy, sortOrder, status });
+      return res?.data?.result; // as per your response format
+    },
+    enabled,
   });
 }

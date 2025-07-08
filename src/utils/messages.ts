@@ -5,3 +5,4 @@ export const mobileNumberErrorMessage = "Invalid mobile number";
 export const minLength = "Minimum length is 10 digits";
 export const maxLength = "Maximum length is 10 digits";
 export const keyRequired = "%key% is required";
+export const keyInvalid = "Please enter a valid %key%";
