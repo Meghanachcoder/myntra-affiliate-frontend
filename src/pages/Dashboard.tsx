@@ -142,6 +142,7 @@ const Dashboard = () => {
               kycStatus={{
                 status: kycStatus.status,
                 requestDate: new Date(kycStatus.request_date).toLocaleDateString(),
+                date: new Date(kycStatus.last_updated).toLocaleDateString(),
                 requestData: {
                   submittedOn: new Date(kycStatus.last_updated).toLocaleDateString(),
                   idType: kycStatus.submitted_info.id_type,
