@@ -1,28 +1,34 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import {
   Table, TableHeader, TableRow, TableHead, TableBody, TableCell
 } from '@/components/ui/table';
+
 import {
   Pagination, PaginationContent, PaginationItem,
   PaginationLink, PaginationNext, PaginationPrevious
 } from '@/components/ui/pagination';
+
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
+
 import { LogOut, Search, Check, Clock, AlertTriangle, UserCheck, ExternalLink } from 'lucide-react';
 import MyntraLogo from '@/components/MyntraLogo';
-import { useGetAllAffiliatesQuery } from '@/lib/api/authApi';
+
+import { useGetAllAdminAffiliatesQuery } from '@/lib/api/commonApi';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  const { data, isLoading, error } = useGetAllAffiliatesQuery({
+  const { data, isLoading, error } = useGetAllAdminAffiliatesQuery({
     page: currentPage,
     limit: itemsPerPage,
     sortBy: 'created_at',
@@ -118,6 +124,7 @@ const AdminDashboard = () => {
               </div>
             </div>
 
+            {/* Table */}
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
@@ -151,7 +158,7 @@ const AdminDashboard = () => {
                       </TableCell>
                     </TableRow>
                   ) : (
-                    affiliates.map((a) => (
+                    affiliates.map((a: any) => (
                       <TableRow key={a.id}>
                         <TableCell>{a.affiliate_id}</TableCell>
                         <TableCell>

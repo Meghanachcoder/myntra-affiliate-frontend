@@ -1,6 +1,6 @@
 import { useMutation ,useQuery} from "@tanstack/react-query";
 
-import {signupApiCall, verifyOtpApiCall, loginApiCall, loginVerifyOtpApiCall ,submitKycApiCall, getKycStatusApiCall,getDashboardApiCall,getInvoicesApiCall} from "./services";
+import {signupApiCall, verifyOtpApiCall, loginApiCall, loginVerifyOtpApiCall ,submitKycApiCall, getKycStatusApiCall,getDashboardApiCall,getInvoicesApiCall,getAdminAffiliatesApiCall} from "./services";
 
 
 export function useSignupMutation(options?: any) {
@@ -79,17 +79,16 @@ export function useGetKycStatusQuery(options?: any) {
   });
 }
 
-export function useGetDashboardQuery({ mobile }: { mobile: string | null }) {
+export function useGetDashboardQuery() {
   return useQuery<any, Error>({
-    queryKey: ['getDashboard', mobile],
-    queryFn: async ({ queryKey }) => {
-      const [_key, mobile] = queryKey;
-      const res = await getDashboardApiCall(mobile);
+    queryKey: ['getDashboard'],
+    queryFn: async () => {
+      const res = await getDashboardApiCall(); 
       return res?.data;
     },
-    enabled: !!mobile,
   });
 }
+
 
 
 export function useGetInvoicesQuery(options: {
@@ -114,6 +113,25 @@ export function useGetInvoicesQuery(options: {
     queryFn: async () => {
       const res = await getInvoicesApiCall({ page, limit, sortBy, sortOrder, status });
       return res?.data?.result; // as per your response format
+    },
+    enabled,
+  });
+}
+
+
+export function useGetAllAdminAffiliatesQuery({
+  page = 1,
+  limit = 10,
+  sortBy = 'created_at',
+  sortOrder = 'ASC',
+  search = '',
+  enabled = true,
+}) {
+  return useQuery({
+    queryKey: ['getAllAdminAffiliates', page, limit, sortBy, sortOrder, search],
+    queryFn: async () => {
+      const res = await getAdminAffiliatesApiCall({ page, limit, sortBy, sortOrder, search });
+      return res?.data;
     },
     enabled,
   });

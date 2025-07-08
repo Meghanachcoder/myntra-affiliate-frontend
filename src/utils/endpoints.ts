@@ -7,5 +7,6 @@ export const ENDPOINTS = {
   kycSubmit: `/kyc/submit`,
   kycStatus: `/kyc/status`,
   dashboard: `/dashboard`,
-  invoices: `/dashboard/invoices`
+  invoices: `/dashboard/invoices`,
+  adminAffiliates: '/admin/affiliates',
 };

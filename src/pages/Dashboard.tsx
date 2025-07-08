@@ -42,7 +42,7 @@ const Dashboard = () => {
     data: dashboardData,
     isLoading: isDashboardLoading,
     error: dashboardError,
-  } = useGetDashboardQuery({ mobile });
+  } = useGetDashboardQuery();
 
   // Fetch invoices (paginated from DB)
   const {

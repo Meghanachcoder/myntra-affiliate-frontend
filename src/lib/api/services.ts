@@ -57,11 +57,10 @@ export const getKycStatusApiCall = async () => {
   }
 };
 
-export const getDashboardApiCall = async (mobile: string) => {
+export const getDashboardApiCall = async () => {
   try {
-     const url = `${ENDPOINTS.dashboard}/${mobile}`;
-  const response = await axiosInstancePrivate.get(url);
-  return response;
+    const response = await axiosInstancePrivate.get(ENDPOINTS.dashboard);
+    return response;
   } catch (error) {
     throw error;
   }
@@ -105,3 +104,23 @@ export const downloadInvoiceApiCall = async (invoiceId: string) => {
     throw error;
   }
 };
+export const getAdminAffiliatesApiCall = async (params: {
+  page?: number;
+  limit?: number;
+  sortBy?: string;
+  sortOrder?: string;
+  search?: string;
+}) => {
+  const queryParams = new URLSearchParams({
+    sortBy: params.sortBy || 'created_at',
+    sortOrder: params.sortOrder || 'ASC',
+    page: params.page?.toString() || '1',
+    limit: params.limit?.toString() || '10',
+    ...(params.search ? { search: params.search } : {})
+  });
+
+  const res = await axiosInstancePrivate.get(`${ENDPOINTS.adminAffiliates}?${queryParams.toString()}`);
+  return res;
+};
+
+
