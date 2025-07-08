@@ -23,17 +23,12 @@ const axiosInstancePublic = axios.create({
 
 axiosInstancePrivate.interceptors.request.use(
   (config) => {
-
-    const token = localStorage.getItem("token");
-    
-    if (!token) {
-      logHelper("No token found in localStorage for api call", config);
-      // window.location.reload();
-      return Promise.reject("No token found in localStorage for api call");
-    } else {
+    const token = localStorage.getItem("auth_token");
+    if (token) {
       config.headers.authorization = `Bearer ${token}`;
     }
-    
+    // Instead of rejecting, just let request continue without token.
+    // The backend should respond with 401 if unauthorized.
     return config;
   },
   (error) => {
@@ -45,18 +40,24 @@ axiosInstancePrivate.interceptors.request.use(
 axiosInstancePrivate.interceptors.response.use(
   (response) => response,
   (error) => {
-
     if (error.response && error.response.status === 400) {
       return Promise.resolve(error.response);
     }
 
     if (error.response && error.response.status === 401) {
-      localStorage.removeItem("token");
-      window.location.reload();
+      localStorage.removeItem("auth_token");
+      localStorage.removeItem("refresh_token");
+      localStorage.removeItem("user_details");
+      // Instead of reload, redirect to login page once:
+      window.location.href = "/login";
+      // Or you can use a state management flag to avoid reload loops
+      // But direct redirect is simpler here.
+      return; // stop here
     }
 
-    return Promise.reject(error.response);
+    return Promise.reject(error);
   }
 );
+
 
 export { axiosInstancePrivate, axiosInstancePublic };

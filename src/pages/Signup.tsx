@@ -26,14 +26,14 @@ const Signup = () => {
   const { mutate: signup } = useSignupMutation();
   const { mutate: verifyOtp } = useVerifyOtpMutation();
 
-  const phoneInitialValues = { mobile: '' };
+  const phoneInitialValues = { mobileNumber: '' };
   const otpInitialValues = { otp: '' };
 
   const handleSendOtp = async (values: any) => {
     setIsLoading(true);
 
     const payload = {
-      mobile: values.mobile,
+      mobile: values.mobileNumber,
       affiliateId,
     };
 
@@ -132,7 +132,7 @@ const Signup = () => {
           validationSchema={signupOtpSchema}
           onSubmit={handleVerifyOtp}
         >
-          {({ values, errors, setFieldValue }) => (
+          {({ values, errors, touched, setFieldValue, handleBlur }) => (
             <Form>
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">Enter OTP</label>
@@ -192,7 +192,7 @@ const Signup = () => {
         validationSchema={signupSchema}
         onSubmit={handleSendOtp}
       >
-        {({ values, errors, setFieldValue }) => (
+        {({ values, errors, touched, setFieldValue, handleBlur}) => (
           <Form>
             <InputField
               label="Affiliate ID"
@@ -203,14 +203,19 @@ const Signup = () => {
             />
 
             <InputField
-              label="Mobile Number"
-              name="mobile"
-              type="tel"
-              placeholder="10-digit mobile number"
-              value={values.mobile}
-              onChange={(e: any) => setFieldValue('mobile', e.target.value)}
-              maxLength={10}
-            />
+            label="Mobile Number"
+            name="mobileNumber"
+            type="tel"
+            placeholder="10-digit mobile number"
+            value={values.mobileNumber}
+            onChange={(e: any) => setFieldValue('mobileNumber', e.target.value)} // ✅ Corrected
+            onBlur={(e: any) => handleBlur(e)} 
+            maxLength={10}
+          />
+
+          {errors.mobileNumber && touched.mobileNumber && (
+            <FormError errors={{ mobileNumber: errors.mobileNumber }} />
+          )}
 
             <Button
               type="submit"

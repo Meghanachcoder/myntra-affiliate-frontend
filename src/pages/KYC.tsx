@@ -80,78 +80,104 @@ const KYC = () => {
       subtitle="Complete your KYC to start receiving payments"
     >
       <Formik
-        initialValues={initialValues}
-        validationSchema={kycSchema}
-        onSubmit={(values) => {
-          console.log(TAG, "Form Data ===>", values);
-          submitKyc(values);
-        }}
+  initialValues={initialValues}
+  validationSchema={kycSchema}
+  validateOnBlur={false}
+  validateOnChange={false}
+  onSubmit={(values, { setTouched, setSubmitting, validateForm }) => {
+    validateForm().then((errors) => {
+      if (Object.keys(errors).length > 0) {
+        setTouched({
+          pan: true,
+          gstin: true,
+          accountNumber: true,
+          confirmAccountNumber: true,
+          ifsc: true,
+          accountName: true,
+        });
+        setSubmitting(false);
+      } else {
+        console.log(TAG, "Form Data ===>", values);
+        submitKyc(values);
+      }
+    });
+  }}
+>
+
+  {({ values, errors, touched, setFieldValue }) => (
+    <Form className="space-y-6">
+      <InputField
+  label="PAN Number"
+  name="pan"
+  value={values.pan}
+  placeholder="Enter your PAN number"
+  onChange={(e) => setFieldValue("pan", e.target.value)}
+  maxLength={10}
+/>
+{errors.pan && touched.pan && <FormError errors={{ pan: errors.pan }} />}
+
+<InputField
+  label="GSTIN (Optional)"
+  name="gstin"
+  value={values.gstin}
+  placeholder="Enter GSTIN (if available)"
+  onChange={(e) => setFieldValue("gstin", e.target.value)}
+  maxLength={15}
+/>
+{errors.gstin && touched.gstin && <FormError errors={{ gstin: errors.gstin }} />}
+
+<InputField
+  label="Account Number"
+  name="accountNumber"
+  type="password"
+  placeholder="Enter your account number"
+  value={values.accountNumber}
+  onChange={(e) => setFieldValue("accountNumber", e.target.value)}
+/>
+{errors.accountNumber && touched.accountNumber && <FormError errors={{ accountNumber: errors.accountNumber }} />}
+
+
+<InputField
+  label="Confirm Account Number"
+  name="confirmAccountNumber"
+  type="password"
+  placeholder="Re-enter your account number"
+  value={values.confirmAccountNumber}
+  onChange={(e) => setFieldValue("confirmAccountNumber", e.target.value)}
+/>
+{errors.confirmAccountNumber && touched.confirmAccountNumber && <FormError errors={{ confirmAccountNumber: errors.confirmAccountNumber }} />}
+
+<InputField
+  label="IFSC Code"
+  name="ifsc"
+  placeholder="Enter IFSC code"
+  value={values.ifsc}
+  onChange={(e) => setFieldValue("ifsc", e.target.value)}
+  maxLength={11}
+/>
+{errors.ifsc && touched.ifsc && <FormError errors={{ ifsc: errors.ifsc }} />}
+
+<InputField
+  label="Account Holder Name"
+  name="accountName"
+  placeholder="Enter account holder name"
+  value={values.accountName}
+  onChange={(e) => setFieldValue("accountName", e.target.value)}
+/>
+{errors.accountName && touched.accountName && <FormError errors={{ accountName: errors.accountName }} />}
+
+
+      <Button
+        type="submit"
+        className="w-full bg-myntra-purple hover:bg-myntra-dark"
+        disabled={isSubmitting}
       >
-        {({ values, errors, touched, setFieldValue }) => (
-          <Form className="space-y-6">
-            <InputField
-              label="PAN Number"
-              name="pan"
-              value={values.pan}
-              onChange={(e) => setFieldValue("pan", e.target.value)}
-              maxLength={10}
-            />
-            {errors.pan && <FormError errors={errors} touched={touched} />}
-
-            <InputField
-              label="GSTIN (Optional)"
-              name="gstin"
-              value={values.gstin}
-              onChange={(e) => setFieldValue("gstin", e.target.value)}
-              maxLength={15}
-            />
-            {errors.gstin && <FormError errors={errors} touched={touched} />}
-
-            <InputField
-              label="Account Number"
-              name="accountNumber"
-              type="password"
-              value={values.accountNumber}
-              onChange={(e) => setFieldValue("accountNumber", e.target.value)}
-            />
-            {errors.accountNumber && <FormError errors={errors} touched={touched} />}
-
-            <InputField
-              label="Confirm Account Number"
-              name="confirmAccountNumber"
-              type="password"
-              value={values.confirmAccountNumber}
-              onChange={(e) => setFieldValue("confirmAccountNumber", e.target.value)}
-            />
-            {errors.confirmAccountNumber && <FormError errors={errors} touched={touched} />}
-
-            <InputField
-              label="IFSC Code"
-              name="ifsc"
-              value={values.ifsc}
-              onChange={(e) => setFieldValue("ifsc", e.target.value)}
-              maxLength={11}
-            />
-            {errors.ifsc && <FormError errors={errors} touched={touched} />}
-
-            <InputField
-              label="Account Holder Name"
-              name="accountName"
-              value={values.accountName}
-              onChange={(e) => setFieldValue("accountName", e.target.value)}
-            />
-            {errors.accountName && <FormError errors={errors} touched={touched} />}
-
-            <Button
-              type="submit"
-              className="w-full bg-myntra-purple hover:bg-myntra-dark"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Submitting..." : "Submit KYC Details"}
-            </Button>
-          </Form>
-        )}
+        {isSubmitting ? "Submitting..." : "Submit KYC Details"}
+      </Button>
+    </Form>
+  )}
       </Formik>
+
     </AuthLayout>
   );
 };
