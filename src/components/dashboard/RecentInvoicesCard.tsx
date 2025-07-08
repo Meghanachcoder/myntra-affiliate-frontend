@@ -1,23 +1,12 @@
-
-import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
 import { FileText } from 'lucide-react';
+
+import { Card, CardContent } from '@/components/ui/card';
+
 import InvoicesList from './InvoicesList';
+import { RecentInvoicesCardProps } from '@/interface/interface';
 
-type Invoice = {
-  id: string;
-  date: string;
-  amount: string;
-  status: string;
-};
+const RecentInvoicesCard = ({ invoices, onViewAll }: RecentInvoicesCardProps) => {
 
-type RecentInvoicesCardProps = {
-  invoices: Invoice[];
-  onViewAll: () => void;
-  onDownload: (invoiceId: string) => void;
-};
-
-const RecentInvoicesCard = ({ invoices, onViewAll, onDownload }: RecentInvoicesCardProps) => {
   if (invoices.length === 0) {
     return (
       <Card>
@@ -54,7 +43,6 @@ const RecentInvoicesCard = ({ invoices, onViewAll, onDownload }: RecentInvoicesC
           limit={3}
           showViewAll={true}
           onViewAll={onViewAll}
-          onDownload={onDownload}
         />
       </CardContent>
     </Card>

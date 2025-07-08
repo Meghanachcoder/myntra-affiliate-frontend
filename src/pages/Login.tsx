@@ -11,7 +11,7 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp
 import { FormError } from '@/components/stack/stack';
 
 import { mobileNumberSchema, otpSchema } from '@/schema/common';
-import { logHelper } from '@/utils/utils';
+import { logHelper, setUserDetails } from '@/utils/utils';
 
 
 import { useLoginMutation, useLoginVerifyOtpMutation } from '@/lib/api/commonApi';
@@ -69,21 +69,13 @@ const Login = () => {
             });
           } else {
             toast({ title: res?.msg, variant: "default" });
-
-            // ✅ Save mobile number to state
             setMobileNumber(values.mobileNumber);
-
-            // ✅ Go to OTP screen
             setStep('otp');
           }
         },
         onError: (err: any) => {
           logHelper(TAG, " ===> err", err);
-          toast({
-            title: "Failed to Send OTP",
-            description: err?.data?.message || "Something went wrong",
-            variant: "destructive"
-          });
+          toast({ title: "Failed to Send OTP", description: err?.response?.data?.msg || "Something went wrong", variant: "destructive" });
         }
       });
     } catch (error: any) {
@@ -95,35 +87,40 @@ const Login = () => {
 
 
   const handleVerifyOtp = async (values: any) => {
+
     logHelper(TAG, " ===> handleVerifyOtp", values);
 
     setIsLoading(true);
 
     try {
+
       const formData = {
         mobile: mobileNumber,
         otp: values.otp.toString().trim()
       };
 
       loginVerifyOtp(formData, {
-        onSuccess: (res: any) => {
+        onSuccess: async (res: any) => {
           logHelper(TAG, " ===> res", res);
 
           const user = res?.result?.user;
 
           if (res?.status === 403 && res?.result?.requireKyc) {
-            toast({
-              title: 'KYC Not Completed',
-              description: res?.msg || 'Redirecting to KYC...',
-            });
 
-            localStorage.setItem('auth_token', res?.result?.accessToken);
-            localStorage.setItem('refresh_token', res?.result?.refreshToken);
-            localStorage.setItem('user_details', JSON.stringify(user));
+            toast({ title: 'KYC Not Completed', description: res?.msg || 'Redirecting to KYC...' });
+
+            const userDetails = {
+              user: user,
+              accessToken: res?.result?.accessToken,
+              refreshToken: res?.result?.refreshToken
+            };
+
+            setUserDetails(userDetails);
 
             setTimeout(() => {
               navigate('/kyc', { state: { mobile: user?.mobile } });
             }, 100);
+
             return;
           }
 
@@ -138,36 +135,45 @@ const Login = () => {
 
           toast({ title: res?.msg || "Login Successful", variant: "default" });
 
-          localStorage.setItem('auth_token', res?.result?.accessToken);
-          localStorage.setItem('user_mobile', user?.mobile);
-          localStorage.setItem('refresh_token', res?.result?.refreshToken);
-          localStorage.setItem('user_details', JSON.stringify(user));
+          const userDetails = {
+            user: user,
+            accessToken: res?.result?.accessToken,
+            refreshToken: res?.result?.refreshToken
+          };
 
+          setUserDetails(userDetails);
+          logHelper(TAG, " ===> i ran till here ", userDetails);
+          await new Promise(resolve => setTimeout(resolve, 2000));
           navigate('/dashboard');
+
         },
         onError: (err: any) => {
+
           logHelper(TAG, " ===> err", err);
 
           const status = err?.response?.status;
           const msg = err?.response?.data?.msg;
           const result = err?.response?.data?.result;
 
-          // ✅ Handle 403 and requireKyc here
           if (status === 403 && result?.requireKyc) {
+
             toast({
               title: 'KYC Not Completed',
               description: msg || 'Redirecting to KYC...',
             });
 
-            localStorage.setItem('auth_token', result?.accessToken);
-            localStorage.setItem('refresh_token', result?.refreshToken);
-            localStorage.setItem('user_details', JSON.stringify(result?.user));
+            const userDetails = {
+              user: result?.user,
+              accessToken: result?.accessToken,
+              refreshToken: result?.refreshToken
+            };
+
+            setUserDetails(userDetails);
 
             navigate('/kyc', { state: { mobile: result?.user?.mobile } });
             return;
           }
 
-          // ❌ All other errors
           toast({
             title: "Failed to Verify OTP",
             description: msg || "Something went wrong",
@@ -181,6 +187,7 @@ const Login = () => {
     } finally {
       setIsLoading(false);
     }
+
   };
 
 
@@ -226,8 +233,7 @@ const Login = () => {
                   </InputOTP>
                 </div>
 
-                {/* {errors.otp && <p className="text-sm text-red-600">{errors.otp}</p>} */}
-                {errors.otp && <FormError errors={errors} />}
+                {errors.otp && <FormError errors={errors.otp} />}
 
               </div>
 
@@ -290,7 +296,7 @@ const Login = () => {
               }}
               className="!mb-0 "
             />
-            {errors.mobileNumber && <FormError errors={errors} />}
+            {errors.mobileNumber && <FormError errors={errors.mobileNumber} />}
 
             <Button
               type="submit"

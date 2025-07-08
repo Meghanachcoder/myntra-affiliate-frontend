@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Formik, Form } from "formik";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import AuthLayout from "@/components/layouts/AuthLayout";
@@ -10,6 +10,7 @@ import { FormError } from "@/components/stack/stack";
 
 import { kycSchema } from "@/schema/common";
 import { useSubmitKycMutation, useGetKycStatusQuery } from "@/lib/api/commonApi";
+import { logHelper } from "@/utils/utils";
 
 const TAG = "KYC: ";
 
@@ -36,30 +37,33 @@ const KYC = () => {
 
   const {
     mutate: submitKyc,
-  } = useSubmitKycMutation({
-    onSuccess: (res: any) => {
-      if (res?.status !== 200 || res?.success !== true) {
-        toast({
-          title: "KYC Failed",
-          description: res?.msg || "Something went wrong",
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "KYC Submitted",
-          description: res?.msg || "KYC successfully submitted",
-        });
-        navigate("/dashboard");
+  } = useSubmitKycMutation();
+
+  function handleSubmit(values: any) {
+
+    logHelper(TAG, " Form Data ===> ", values);
+
+    setIsSubmitting(true);
+
+    submitKyc(values, {
+      onSuccess: (res: any) => {
+        if (res?.status !== 200 || res?.success !== true) {
+          toast({ title: "KYC Failed", description: res?.msg || "Something went wrong", variant: "destructive" });
+        } else {
+          toast({ title: "KYC Submitted", description: res?.msg || "KYC successfully submitted", });
+          navigate("/dashboard");
+          localStorage.setItem("kycStatus", "completed");
+        }
+      },
+      onError: (error: any) => {
+        toast({ title: "KYC Submission Failed", description: error?.response?.data?.msg || "Something went wrong", variant: "destructive" });
+      },
+      onSettled: () => {
+        setIsSubmitting(false);
       }
-    },
-    onError: (error: any) => {
-      toast({
-        title: "KYC Submission Failed",
-        description: error?.response?.data?.msg || "Something went wrong",
-        variant: "destructive",
-      });
-    },
-  });
+    });
+
+  }
 
   useEffect(() => {
     if (kycStatus?.result?.status === "completed") {
@@ -80,7 +84,11 @@ const KYC = () => {
   }
 
 
-  console.log(TAG, " kycStatus ===> ", kycStatus);
+  logHelper(TAG, " kycStatus ===> ", kycStatus);
+
+  if (kycStatus?.result?.status === "pending") {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   return (
     <AuthLayout
@@ -90,98 +98,104 @@ const KYC = () => {
       <Formik
         initialValues={initialValues}
         validationSchema={kycSchema}
-        validateOnBlur={false}
-        validateOnChange={false}
-        onSubmit={(values, { setTouched, setSubmitting, validateForm }) => {
-          validateForm().then((errors) => {
-            if (Object.keys(errors).length > 0) {
-              setTouched({
-                pan: true,
-                gstin: true,
-                accountNumber: true,
-                confirmAccountNumber: true,
-                ifsc: true,
-                accountName: true,
-              });
-              setSubmitting(false);
-            } else {
-              console.log(TAG, "Form Data ===>", values);
-              submitKyc(values);
-            }
-          });
-        }}
+        onSubmit={(values) => { handleSubmit(values); }}
       >
 
         {({ values, errors, touched, setFieldValue }) => (
-          <Form className="space-y-6">
-            <InputField
-              label="PAN Number"
-              name="pan"
-              value={values.pan}
-              placeholder="Enter your PAN number"
-              onChange={(e) => setFieldValue("pan", e.target.value)}
-              maxLength={10}
-            />
-            {errors.pan && touched.pan && <FormError errors={{ pan: errors.pan }} />}
+          <Form className="flex flex-col gap-2">
 
-            <InputField
-              label="GSTIN (Optional)"
-              name="gstin"
-              value={values.gstin}
-              placeholder="Enter GSTIN (if available)"
-              onChange={(e) => setFieldValue("gstin", e.target.value)}
-              maxLength={15}
-            />
-            {errors.gstin && touched.gstin && <FormError errors={{ gstin: errors.gstin }} />}
+            <div>
+              <InputField
+                label="PAN Number"
+                name="pan"
+                id="pan"
+                value={values.pan}
+                placeholder="Enter your PAN number"
+                onChange={(e) => setFieldValue("pan", e.target.value)}
+                maxLength={10}
+                disabled={isSubmitting}
+              />
+              {errors.pan && touched.pan && <FormError errors={errors.pan} />}
+            </div>
 
-            <InputField
-              label="Account Number"
-              name="accountNumber"
-              type="password"
-              placeholder="Enter your account number"
-              value={values.accountNumber}
-              onChange={(e) => setFieldValue("accountNumber", e.target.value)}
-            />
-            {errors.accountNumber && touched.accountNumber && <FormError errors={{ accountNumber: errors.accountNumber }} />}
+            <div>
+              <InputField
+                label="GSTIN (Optional)"
+                name="gstin"
+                id="gstin"
+                value={values.gstin}
+                placeholder="Enter GSTIN (if available)"
+                onChange={(e) => setFieldValue("gstin", e.target.value)}
+                maxLength={15}
+                disabled={isSubmitting}
+              />
+              {errors.gstin && touched.gstin && <FormError errors={errors.gstin} />}
+            </div>
+
+            <div>
+              <InputField
+                label="Account Number"
+                name="accountNumber"
+                id="accountNumber"
+                type="password"
+                placeholder="Enter your account number"
+                value={values.accountNumber}
+                onChange={(e) => setFieldValue("accountNumber", e.target.value)}
+                disabled={isSubmitting}
+              />
+              {errors.accountNumber && touched.accountNumber && <FormError errors={errors.accountNumber} />}
+            </div>
 
 
-            <InputField
-              label="Confirm Account Number"
-              name="confirmAccountNumber"
-              type="password"
-              placeholder="Re-enter your account number"
-              value={values.confirmAccountNumber}
-              onChange={(e) => setFieldValue("confirmAccountNumber", e.target.value)}
-            />
-            {errors.confirmAccountNumber && touched.confirmAccountNumber && <FormError errors={{ confirmAccountNumber: errors.confirmAccountNumber }} />}
+            <div>
+              <InputField
+                label="Confirm Account Number"
+                name="confirmAccountNumber"
+                id="confirmAccountNumber"
+                type="password"
+                placeholder="Re-enter your account number"
+                value={values.confirmAccountNumber}
+                onChange={(e) => setFieldValue("confirmAccountNumber", e.target.value)}
+                disabled={isSubmitting}
+              />
+              {errors.confirmAccountNumber && touched.confirmAccountNumber && <FormError errors={errors.confirmAccountNumber} />}
+            </div>
 
-            <InputField
-              label="IFSC Code"
-              name="ifsc"
-              placeholder="Enter IFSC code"
-              value={values.ifsc}
-              onChange={(e) => setFieldValue("ifsc", e.target.value)}
-              maxLength={11}
-            />
-            {errors.ifsc && touched.ifsc && <FormError errors={{ ifsc: errors.ifsc }} />}
+            <div>
+              <InputField
+                label="IFSC Code"
+                name="ifsc"
+                id="ifsc"
+                placeholder="Enter IFSC code"
+                value={values.ifsc}
+                onChange={(e) => setFieldValue("ifsc", e.target.value)}
+                maxLength={11}
+                disabled={isSubmitting}
+              />
+              {errors.ifsc && touched.ifsc && <FormError errors={errors.ifsc} />}
+            </div>
 
-            <InputField
-              label="Account Holder Name"
-              name="accountName"
-              placeholder="Enter account holder name"
-              value={values.accountName}
-              onChange={(e) => setFieldValue("accountName", e.target.value)}
-            />
-            {errors.accountName && touched.accountName && <FormError errors={{ accountName: errors.accountName }} />}
-
+            <div>
+              <InputField
+                label="Account Holder Name"
+                name="accountName"
+                id="accountName"
+                placeholder="Enter account holder name"
+                value={values.accountName}
+                onChange={(e) => setFieldValue("accountName", e.target.value)}
+                disabled={isSubmitting}
+              />
+              {errors.accountName && touched.accountName && <FormError errors={errors.accountName} />}
+            </div>
 
             <Button
               type="submit"
-              className="w-full bg-myntra-purple hover:bg-myntra-dark"
+              className="w-full bg-myntra-purple hover:bg-myntra-dark mt-2"
               disabled={isSubmitting}
             >
               {isSubmitting ? "Submitting..." : "Submit KYC Details"}
             </Button>
+
           </Form>
         )}
       </Formik>

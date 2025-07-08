@@ -1,26 +1,13 @@
-import React, { useEffect } from 'react';
 
 import { Card, CardContent } from '@/components/ui/card';
 import { useGetKycStatusQuery } from '@/lib/api/commonApi';
 import { useWebSocket } from '@/hooks/use-websocket';
+import { KycDetailsTabProps } from '@/interface/interface';
+import { dateFormatter } from '@/utils/utils';
 
-type KycDetailsTabProps = {
-  kycDetails: {
-    idType: string;
-    idValue: string;
-    accountNumber: string;
-    ifsc: string;
-    accountName: string;
-  };
-  kycStatus: {
-    status: string;
-    date: string;
-    requestDate: string;
-  };
-};
 
-const TAG = "KycDetailsTab";
-const KycDetailsTab = ({ kycDetails, kycStatus }: KycDetailsTabProps) => {
+const TAG: string = "KycDetailsTab: ";
+const KycDetailsTab = ({ kycDetails }: any) => {
 
   const { messages, sendMessage } = useWebSocket(`ws://localhost:5001?affiliateId=AFF321&mobile=7062019342`);
 
@@ -32,26 +19,22 @@ const KycDetailsTab = ({ kycDetails, kycStatus }: KycDetailsTabProps) => {
     refetchInterval: 5000
   });
 
-  const socketCall = async () => {
+  // const socketCall = async () => {
 
-    const message = { type: 'ping' };
-    sendMessage(JSON.stringify(message));
+  //   const message = { type: 'ping' };
+  //   sendMessage(JSON.stringify(message));
 
-    const authData = { type: 'auth', token: localStorage.getItem("auth_token") };
-    sendMessage(JSON.stringify(authData));
+  //   const authData = { type: 'auth', token: localStorage.getItem("auth_token") };
+  //   sendMessage(JSON.stringify(authData));
 
-    await new Promise(resolve => setTimeout(resolve, 2000));
+  //   await new Promise(resolve => setTimeout(resolve, 2000));
 
-    console.log(TAG, " messages ===> ", messages);
-
-  }
-
-  // useEffect(() => {
   //   console.log(TAG, " messages ===> ", messages);
-  // }, [messages]);
+
+  // }
 
   // console.log(TAG, " kycStatusData ===> ", kycStatusData);
-  console.log(TAG, " messages ===> ", messages);
+  // console.log(TAG, " messages ===> ", messages);
 
   return (
     <Card>
@@ -63,15 +46,14 @@ const KycDetailsTab = ({ kycDetails, kycStatus }: KycDetailsTabProps) => {
         <div className="space-y-6">
           {/* KYC Status Section */}
           <div className="border-b pb-4">
-            <h3 className="text-lg font-medium mb-3">KYC Status</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <h4 className="text-sm font-medium text-gray-500 mb-1">Current Status</h4>
-                <p className="text-base">{kycStatus.status}</p>
+                <p className="text-base">{kycStatusData?.result?.status}</p>
               </div>
               <div>
                 <h4 className="text-sm font-medium text-gray-500 mb-1">Request Submitted On</h4>
-                <p className="text-base">{kycStatus.requestDate}</p>
+                <p className="text-base">{dateFormatter(kycDetails?.request_date)}</p>
               </div>
             </div>
           </div>
@@ -81,29 +63,25 @@ const KycDetailsTab = ({ kycDetails, kycStatus }: KycDetailsTabProps) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <h4 className="text-sm font-medium text-gray-500 mb-1">ID Type</h4>
-                <p className="text-base">{kycDetails.idType}</p>
+                <p className="text-base">{kycDetails?.submitted_info?.id_type}</p>
               </div>
               <div>
-                <h4 className="text-sm font-medium text-gray-500 mb-1">{kycDetails.idType} Number</h4>
-                <p className="text-base">{kycDetails.idValue}</p>
+                <h4 className="text-sm font-medium text-gray-500 mb-1">{kycDetails?.submitted_info?.id_type} Number</h4>
+                <p className="text-base">{kycDetails?.submitted_info?.id_number}</p>
               </div>
               <div>
                 <h4 className="text-sm font-medium text-gray-500 mb-1">Bank Account Number</h4>
-                <p className="text-base">{kycDetails.accountNumber}</p>
+                <p className="text-base">{kycDetails?.submitted_info?.bank_account}</p>
               </div>
               <div>
                 <h4 className="text-sm font-medium text-gray-500 mb-1">IFSC Code</h4>
-                <p className="text-base">{kycDetails.ifsc}</p>
+                <p className="text-base">{kycDetails?.submitted_info?.ifsc_code}</p>
               </div>
               <div className="md:col-span-2">
                 <h4 className="text-sm font-medium text-gray-500 mb-1">Account Holder Name</h4>
-                <p className="text-base">{kycDetails.accountName}</p>
+                <p className="text-base">{kycDetails?.submitted_info?.account_holder}</p>
               </div>
             </div>
-          </div>
-
-          <div className="btn btn-primary bg-primary" onClick={() => socketCall()}>
-            KYC Request Data
           </div>
 
         </div>

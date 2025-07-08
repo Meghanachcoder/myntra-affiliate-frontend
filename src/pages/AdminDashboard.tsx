@@ -48,7 +48,7 @@ const AdminDashboard = () => {
       title: 'Logged out',
       description: 'You have been successfully logged out.',
     });
-    navigate('/admin/login');
+    navigate('/login');
   };
 
   const handleViewAffiliate = (id: string) => {

@@ -1,19 +1,17 @@
-import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
 import { Check, Clock, AlertTriangle } from 'lucide-react';
 
-type KycStatusProps = {
-  status: 'Verified' | 'Pending' | 'Rejected' | string;
-  date: string;
-  requestDate: string;
-};
+import { Card, CardContent } from '@/components/ui/card';
 
-const KycStatusCard = ({ status, date, requestDate }: KycStatusProps) => {
+import { dateFormatter, logHelper } from '@/utils/utils';
+
+const TAG:string = "KycStatusCard: ";
+const KycStatusCard = ({ kycStatus }: any) => {
+  
   const getStatusBadge = (status: string) => {
-    const baseClass =
-      'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium';
 
-    switch (status.toLowerCase()) {
+    const baseClass = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium';
+
+    switch (status?.toLowerCase()) {
       case 'verified':
         return (
           <span className={`${baseClass} bg-green-100 text-green-800`}>
@@ -41,19 +39,21 @@ const KycStatusCard = ({ status, date, requestDate }: KycStatusProps) => {
     }
   };
 
+  logHelper(TAG, "  kycStatus =====> ", kycStatus);
+
   return (
     <Card>
       <CardContent className="p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-medium text-gray-800">KYC Status</h2>
-          {getStatusBadge(status)}
+          {getStatusBadge(kycStatus?.status)}
         </div>
         <div className="space-y-2">
           <p className="text-sm text-gray-600">
-            <strong>Request submitted:</strong> {requestDate}
+            <strong>Request submitted:</strong> {dateFormatter(kycStatus?.request_date)}
           </p>
           <p className="text-sm text-gray-600">
-            <strong>Last updated:</strong> {date}
+            <strong>Last updated:</strong> {dateFormatter(kycStatus?.last_updated)}
           </p>
         </div>
       </CardContent>

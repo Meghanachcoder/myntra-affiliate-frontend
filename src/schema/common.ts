@@ -1,6 +1,6 @@
 import * as yup from "yup";
 
-import { minLength, maxLength, keyRequired ,keyInvalid} from "@/utils/messages";
+import { minLength, maxLength, keyRequired, keyInvalid } from "@/utils/messages";
 
 export const mobileNumberSchema = yup.object().shape({
   mobileNumber: yup
@@ -18,8 +18,7 @@ export const otpSchema = yup.object().shape({
   otp: yup
     .string()
     .required(keyRequired.replace("%key%", "OTP"))
-    .min(6, minLength)
-    .max(6, maxLength),
+    .length(6, keyInvalid.replace('%key%', 'OTP')),
 
 });
 
@@ -44,6 +43,7 @@ export const signupOtpSchema = yup.object().shape({
 
 
 export const kycSchema = yup.object().shape({
+
   pan: yup
     .string()
     .required(keyRequired.replace("%key%", "PAN Number"))
@@ -51,13 +51,8 @@ export const kycSchema = yup.object().shape({
 
   gstin: yup
     .string()
-    .nullable()
-    .transform((val) => (val === "" ? null : val))
     .notRequired()
-    .matches(
-      /^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}Z[A-Z\d]{1}$/,
-      keyInvalid.replace("%key%", "GSTIN")
-    ),
+    .matches(/^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}Z[A-Z\d]{1}$/, keyInvalid.replace("%key%", "GSTIN")),
 
   accountNumber: yup
     .string()
@@ -67,10 +62,7 @@ export const kycSchema = yup.object().shape({
   confirmAccountNumber: yup
     .string()
     .required(keyRequired.replace("%key%", "Confirm Account Number"))
-    .oneOf(
-      [yup.ref("accountNumber")],
-      "Account numbers do not match"
-    ),
+    .oneOf([yup.ref("accountNumber")], "Account numbers do not match"),
 
   ifsc: yup
     .string()
@@ -79,5 +71,6 @@ export const kycSchema = yup.object().shape({
 
   accountName: yup
     .string()
+    .trim()
     .required(keyRequired.replace("%key%", "Account Holder Name")),
 });

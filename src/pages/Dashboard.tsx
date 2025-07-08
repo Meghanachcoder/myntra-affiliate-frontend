@@ -12,35 +12,18 @@ import KycStatusCard from '@/components/dashboard/KycStatusCard';
 import PayoutCard from '@/components/dashboard/PayoutCard';
 import RecentInvoicesCard from '@/components/dashboard/RecentInvoicesCard';
 
-import {
-  useGetDashboardQuery,
-  useGetInvoicesQuery,
-} from "@/lib/api/commonApi";
-import { downloadInvoiceApiCall } from "@/lib/api/services";
+import { useGetDashboardQuery, useGetInvoicesQuery } from "@/lib/api/commonApi";
+import { clearAuth } from "@/utils/auth";
 
 const Dashboard = () => {
 
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const [activeTab, setActiveTab] = useState("home");
-
-  const token = localStorage.getItem("auth_token");
-  const mobile = localStorage.getItem("user_mobile");
+  const [activeTab, setActiveTab] = useState<string>("home");
 
   const [page, setPage] = useState(1);
   const limit = 10;
-
-  useEffect(() => {
-    if (!token || !mobile) {
-      toast({
-        title: "Session expired",
-        description: "Please login again",
-        variant: "destructive",
-      });
-      navigate("/login");
-    }
-  }, [token, mobile, navigate, toast]);
 
   const {
     data: dashboardData,
@@ -66,45 +49,40 @@ const Dashboard = () => {
       toast({
         title: "Failed to load data",
         description: dashboardError?.message || invoicesError?.message,
-        variant: "destructive",
+        variant: "destructive"
       });
     }
   }, [dashboardError, invoicesError, toast]);
 
   const handleLogout = () => {
-    localStorage.removeItem("auth_token");
-    localStorage.removeItem("refresh_token");
-    localStorage.removeItem("user_mobile");
-    localStorage.removeItem("user_details");
+    clearAuth();
     navigate("/login");
   };
 
   const handleDownloadInvoice = async (invoiceId: string, status: string) => {
-    if (status !== "paid") {
-      toast({
-        title: "Invoice not available",
-        description: "Only paid invoices can be downloaded.",
-        variant: "destructive",
-      });
-      return;
-    }
+    
+    // if (status !== "paid") {
+    //   toast({ title: "Invoice not available", description: "Only paid invoices can be downloaded.", variant: "destructive" });
+    //   return;
+    // }
 
-    try {
-      const response = await downloadInvoiceApiCall(invoiceId);
-      const blob = new Blob([response.data], { type: "application/pdf" });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `invoice_${invoiceId}.pdf`;
-      a.click();
-      window.URL.revokeObjectURL(url);
-    } catch (error: any) {
-      toast({
-        title: "Download failed",
-        description: error?.response?.data?.message || error.message,
-        variant: "destructive",
-      });
-    }
+    // try {
+    //   const response = await downloadInvoiceApiCall(invoiceId);
+    //   const blob = new Blob([response.data], { type: "application/pdf" });
+    //   const url = window.URL.createObjectURL(blob);
+    //   const a = document.createElement("a");
+    //   a.href = url;
+    //   a.download = `invoice_${invoiceId}.pdf`;
+    //   a.click();
+    //   window.URL.revokeObjectURL(url);
+    // } catch (error: any) {
+    //   toast({
+    //     title: "Download failed",
+    //     description: error?.response?.data?.message || error.message,
+    //     variant: "destructive",
+    //   });
+    // }
+
   };
 
   if (isDashboardLoading || !dashboardData) {
@@ -141,41 +119,9 @@ const Dashboard = () => {
 
           <TabsContent value="home">
 
-            {/* <DashboardTabContent
-              invoices={dashboardData.result.invoices || []}
-              kycStatus={{
-                status: kycStatus.status,
-                requestDate: new Date(kycStatus.request_date).toLocaleDateString(),
-                date: new Date(kycStatus.last_updated).toLocaleDateString(),
-                requestData: {
-                  submittedOn: new Date(kycStatus.last_updated).toLocaleDateString(),
-                  idType: kycStatus.submitted_info.id_type,
-                  idNumber: kycStatus.submitted_info.id_number,
-                  bankAccount: kycStatus.submitted_info.bank_account,
-                  ifscCode: kycStatus.submitted_info.ifsc_code,
-                  accountHolder: kycStatus.submitted_info.account_holder,
-                },
-              }}
-              payoutInfo={{
-                netPayout: `₹${payout_info.net_payout}`,
-                lastPayout: `₹${payout_info.last_payout}`,
-                lastPayoutDate: "", // Add if backend sends
-              }}
-              onViewAllInvoices={() => setActiveTab("invoices")}
-              onDownloadInvoice={(id) => {
-                const invoice = dashboardData.result.invoices?.find(inv => inv.id === id);
-                handleDownloadInvoice(id, invoice?.status || "");
-              }}
-            /> */}
-
-
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <KycStatusCard
-                  status={kycStatus.status}
-                  date={kycStatus.date}
-                  requestDate={kycStatus.requestDate}
-                />
+                <KycStatusCard kycStatus={kycStatus} />
 
                 <PayoutCard
                   amount={payout_info.net_payout}
@@ -186,7 +132,6 @@ const Dashboard = () => {
               <RecentInvoicesCard
                 invoices={invoiceData?.result || []}
                 onViewAll={() => setActiveTab("invoices")}
-                onDownload={(id, status) => handleDownloadInvoice(id, status)}
               />
             </div>
 
@@ -195,7 +140,6 @@ const Dashboard = () => {
           <TabsContent value="invoices">
             <AllInvoicesTab
               invoices={invoiceData?.invoices || []}
-              onDownload={(id, status) => handleDownloadInvoice(id, status)}
               page={page}
               setPage={setPage}
               totalPages={invoiceData?.totalPages || 1}
@@ -204,25 +148,22 @@ const Dashboard = () => {
           </TabsContent>
 
           <TabsContent value="kyc">
-            <KycDetailsTab
-              kycDetails={{
-                idType: kycStatus.submitted_info.id_type,
-                idValue: kycStatus.submitted_info.id_number,
-                accountNumber: kycStatus.submitted_info.bank_account,
-                ifsc: kycStatus.submitted_info.ifsc_code,
-                accountName: kycStatus.submitted_info.account_holder,
-              }}
-              kycStatus={{
-                status: kycStatus.status,
-                date: new Date(kycStatus.last_updated).toLocaleDateString(),
-                requestDate: new Date(kycStatus.request_date).toLocaleDateString(),
-                requestData: {},
-              }}
+            <KycDetailsTab kycDetails={kycStatus}
+              // kycDetails={{
+              //   idType: kycStatus.submitted_info.id_type,
+              //   idValue: kycStatus.submitted_info.id_number,
+              //   accountNumber: kycStatus.submitted_info.bank_account,
+              //   ifsc: kycStatus.submitted_info.ifsc_code,
+              //   accountName: kycStatus.submitted_info.account_holder,
+              // }}
+              // kycStatus={{
+              //   status: kycStatus.status,
+              //   date: new Date(kycStatus.last_updated).toLocaleDateString(),
+              //   requestDate: new Date(kycStatus.request_date).toLocaleDateString(),
+              // }}
             />
-
-
-            
           </TabsContent>
+
         </Tabs>
       </main>
     </div>

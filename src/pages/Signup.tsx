@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Formik, Form } from "formik";
 
@@ -15,9 +15,11 @@ import { useSignupMutation, useVerifyOtpMutation } from '@/lib/api/commonApi';
 const TAG = "Signup:";
 
 const Signup = () => {
+
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const affiliateId = searchParams.get('affiliateId') || 'MYNTRA123';
+
+  const affiliateId = searchParams.get('affiliateId') || 'AFF321';
 
   const [step, setStep] = useState<'details' | 'otp'>('details');
   const [mobileNumber, setMobileNumber] = useState('');
@@ -30,11 +32,12 @@ const Signup = () => {
   const otpInitialValues = { otp: '' };
 
   const handleSendOtp = async (values: any) => {
+
     setIsLoading(true);
 
     const payload = {
       mobile: values.mobileNumber,
-      affiliateId,
+      affiliateId: affiliateId
     };
 
     signup(payload, {
@@ -98,29 +101,6 @@ const Signup = () => {
     });
   };
 
-  // const handleResendOtp = () => {
-  //   const payload = {
-  //     mobile: mobileNumber,
-  //     affiliateId,
-  //   };
-
-  //   signup(payload, {
-  //     onSuccess: (res: any) => {
-  //       toast({
-  //         title: 'OTP Resent',
-  //         description: res?.msg || 'New OTP sent to your phone.',
-  //       });
-  //     },
-  //     onError: (err: any) => {
-  //       toast({
-  //         title: 'Resend OTP Failed',
-  //         description: err?.response?.data?.message || 'Please try again later.',
-  //         variant: 'destructive',
-  //       });
-  //     }
-  //   });
-  // };
-
   if (step === 'otp') {
     return (
       <AuthLayout
@@ -154,10 +134,8 @@ const Signup = () => {
                     </InputOTPGroup>
                   </InputOTP>
                 </div>
-                {errors.otp && <FormError errors={errors} />}
+                {errors.otp && <FormError errors={errors.otp} />}
               </div>
-
-              
 
               <Button
                 type="submit"
@@ -192,8 +170,9 @@ const Signup = () => {
         validationSchema={signupSchema}
         onSubmit={handleSendOtp}
       >
-        {({ values, errors, touched, setFieldValue, handleBlur}) => (
+        {({ values, errors, touched, setFieldValue, handleBlur }) => (
           <Form>
+
             <InputField
               label="Affiliate ID"
               name="affiliateId"
@@ -203,19 +182,16 @@ const Signup = () => {
             />
 
             <InputField
-            label="Mobile Number"
-            name="mobileNumber"
-            type="tel"
-            placeholder="10-digit mobile number"
-            value={values.mobileNumber}
-            onChange={(e: any) => setFieldValue('mobileNumber', e.target.value)} // ✅ Corrected
-            onBlur={(e: any) => handleBlur(e)} 
-            maxLength={10}
-          />
-
-          {errors.mobileNumber && touched.mobileNumber && (
-            <FormError errors={{ mobileNumber: errors.mobileNumber }} />
-          )}
+              label="Mobile Number"
+              name="mobileNumber"
+              type="tel"
+              placeholder="10-digit mobile number"
+              value={values.mobileNumber}
+              onChange={(e: any) => setFieldValue('mobileNumber', e.target.value)}
+              onBlur={(e: any) => handleBlur(e)}
+              maxLength={10}
+            />
+            {errors.mobileNumber && touched.mobileNumber && (<FormError errors={{ mobileNumber: errors.mobileNumber }} />)}
 
             <Button
               type="submit"

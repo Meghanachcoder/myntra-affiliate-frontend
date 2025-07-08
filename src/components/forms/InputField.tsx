@@ -13,7 +13,7 @@ interface InputFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
 const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
   ({ label, error, className, ...props }, ref) => {
     return (
-      <div className={cn("form-group", className)}>
+      <div className={cn("form-group !mt-0 !mb-0", className)}>
         <Label 
           htmlFor={props.id || props.name} 
           className="block mb-1 text-sm font-medium text-gray-700"

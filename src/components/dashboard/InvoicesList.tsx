@@ -1,8 +1,8 @@
 
-import React from 'react';
+import { FileText } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
-import { FileText } from 'lucide-react';
 
 type Invoice = {
   id: string;
@@ -17,7 +17,6 @@ type InvoicesListProps = {
   limit?: number;
   showViewAll?: boolean;
   onViewAll?: () => void;
-  onDownload: (invoiceId: string) => void;
 };
 
 const InvoicesList = ({ 
@@ -25,7 +24,6 @@ const InvoicesList = ({
   limit, 
   showViewAll = false, 
   onViewAll, 
-  onDownload 
 }: InvoicesListProps) => {
   const displayInvoices = limit ? invoices.slice(0, limit) : invoices;
 
@@ -89,7 +87,6 @@ const InvoicesList = ({
               <Button 
                 size="sm" 
                 variant="ghost"
-                onClick={() => onDownload(invoice.id)}
                 className="flex items-center"
               >
                 <FileText className="h-4 w-4 mr-1" />
@@ -99,6 +96,7 @@ const InvoicesList = ({
           </TableRow>
         ))}
       </TableBody>
+
       {showViewAll && (
         <tfoot>
           <tr>
@@ -108,6 +106,7 @@ const InvoicesList = ({
           </tr>
         </tfoot>
       )}
+
     </Table>
   );
 };

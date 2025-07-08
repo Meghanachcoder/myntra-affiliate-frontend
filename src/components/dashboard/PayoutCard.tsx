@@ -1,12 +1,8 @@
-
-import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
 import { TrendingUp } from 'lucide-react';
 
-type PayoutCardProps = {
-  amount: string;
-  subtext: string;
-};
+import { Card, CardContent } from '@/components/ui/card';
+
+import { PayoutCardProps } from '@/interface/interface';
 
 const PayoutCard = ({ amount, subtext }: PayoutCardProps) => {
   return (
