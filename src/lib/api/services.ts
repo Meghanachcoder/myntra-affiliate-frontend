@@ -154,3 +154,16 @@ export const updateKycStatusApiCall = async (payload: { id: string; status: stri
   }
 };
 
+
+
+export const processPaymentApiCall = async (affiliateId: string) => {
+  try {
+    const response = await axiosInstancePrivate.post(
+      ENDPOINTS.processPayout,
+      { id: affiliateId }
+    );
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};

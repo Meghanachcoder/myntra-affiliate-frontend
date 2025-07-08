@@ -1,6 +1,6 @@
 import { useMutation ,useQuery} from "@tanstack/react-query";
 
-import {signupApiCall, verifyOtpApiCall, loginApiCall, loginVerifyOtpApiCall ,submitKycApiCall, getKycStatusApiCall,getDashboardApiCall,getInvoicesApiCall,getAdminAffiliatesApiCall,getAffiliateByIdApiCall,updateKycStatusApiCall} from "./services";
+import {signupApiCall, verifyOtpApiCall, loginApiCall, loginVerifyOtpApiCall ,submitKycApiCall, getKycStatusApiCall,getDashboardApiCall,getInvoicesApiCall,getAdminAffiliatesApiCall,getAffiliateByIdApiCall,updateKycStatusApiCall,processPaymentApiCall} from "./services";
 
 
 export function useSignupMutation(options?: any) {
@@ -112,7 +112,7 @@ export function useGetInvoicesQuery(options: {
     queryKey: ["getInvoices", page, limit, sortBy, sortOrder, status],
     queryFn: async () => {
       const res = await getInvoicesApiCall({ page, limit, sortBy, sortOrder, status });
-      return res?.data?.result; // as per your response format
+      return res?.data?.result; 
     },
     enabled,
   });
@@ -155,6 +155,19 @@ export function useUpdateKycStatusMutation(options?: any) {
     mutationFn: async (payload: { id: string; status: string }) => {
       const res = await updateKycStatusApiCall(payload);
       return res?.data;
+    },
+    ...options,
+  });
+}
+
+
+
+export function useProcessPaymentMutation(options?: any) {
+  return useMutation<any, Error, string>({
+    mutationKey: ['processAffiliatePayment'],
+    mutationFn: async (affiliateId: string) => {
+      const response = await processPaymentApiCall(affiliateId);
+      return response?.data;
     },
     ...options,
   });
