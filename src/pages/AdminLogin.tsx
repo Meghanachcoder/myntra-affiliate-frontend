@@ -7,9 +7,9 @@ import AuthLayout from '@/components/layouts/AuthLayout';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { z } from 'zod';
 import {
-  useAdminLoginMutation,
-  useAdminLoginVerifyOtpMutation,
-} from '@/lib/api/authApi';
+  useLoginMutation,
+  useLoginVerifyOtpMutation,
+} from '@/lib/api/commonApi';
 
 const phoneSchema = z.object({
   phone: z.string().min(10, "Phone number must be at least 10 digits"),
@@ -21,8 +21,8 @@ const otpSchema = z.object({
 
 const AdminLogin = () => {
   const navigate = useNavigate();
-  const [sendOtp] = useAdminLoginMutation();
-  const [verifyOtp] = useAdminLoginVerifyOtpMutation();
+  const { mutate: sendOtp } = useLoginMutation();
+  const { mutate: verifyOtp } = useLoginVerifyOtpMutation();
 
   const [step, setStep] = useState<'phone' | 'otp'>('phone');
   const [phoneData, setPhoneData] = useState({ phone: '' });
@@ -77,7 +77,7 @@ const AdminLogin = () => {
 
     setIsLoading(true);
     try {
-      await sendOtp(phoneData.phone).unwrap();
+      await sendOtp(phoneData.phone);
       toast({
         title: "OTP Sent",
         description: "Check your phone for the admin login code.",
@@ -100,10 +100,10 @@ const AdminLogin = () => {
 
     setIsLoading(true);
     try {
-      const response = await verifyOtp({
+      const response: any = await verifyOtp({
         mobile: phoneData.phone,
         otp: otpData.otp,
-      }).unwrap();
+      });
 
       if (response?.result?.token) {
         localStorage.setItem('admin_token', response.result.token);
@@ -139,7 +139,7 @@ const AdminLogin = () => {
 
     setIsLoading(true);
     try {
-      await sendOtp(phoneData.phone).unwrap();
+      await sendOtp(phoneData.phone);
       toast({
         title: "OTP Resent",
         description: "A new code has been sent to your admin number.",

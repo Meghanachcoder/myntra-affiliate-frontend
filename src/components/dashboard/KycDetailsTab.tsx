@@ -1,6 +1,8 @@
+import React, { useEffect } from 'react';
 
-import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
+import { useGetKycStatusQuery } from '@/lib/api/commonApi';
+import { useWebSocket } from '@/hooks/use-websocket';
 
 type KycDetailsTabProps = {
   kycDetails: {
@@ -17,14 +19,47 @@ type KycDetailsTabProps = {
   };
 };
 
+const TAG = "KycDetailsTab";
 const KycDetailsTab = ({ kycDetails, kycStatus }: KycDetailsTabProps) => {
+
+  const { messages, sendMessage } = useWebSocket(`ws://localhost:5001?affiliateId=AFF321&mobile=7062019342`);
+
+  const {
+    data: kycStatusData,
+    isLoading: isLoading,
+    error: kycStatusError,
+  } = useGetKycStatusQuery({
+    refetchInterval: 5000
+  });
+
+  const socketCall = async () => {
+
+    const message = { type: 'ping' };
+    sendMessage(JSON.stringify(message));
+
+    const authData = { type: 'auth', token: localStorage.getItem("auth_token") };
+    sendMessage(JSON.stringify(authData));
+
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+    console.log(TAG, " messages ===> ", messages);
+
+  }
+
+  // useEffect(() => {
+  //   console.log(TAG, " messages ===> ", messages);
+  // }, [messages]);
+
+  // console.log(TAG, " kycStatusData ===> ", kycStatusData);
+  console.log(TAG, " messages ===> ", messages);
+
   return (
     <Card>
       <CardContent className="p-6">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-semibold">KYC Details</h2>
         </div>
-        
+
         <div className="space-y-6">
           {/* KYC Status Section */}
           <div className="border-b pb-4">
@@ -41,7 +76,6 @@ const KycDetailsTab = ({ kycDetails, kycStatus }: KycDetailsTabProps) => {
             </div>
           </div>
 
-          {/* KYC Request Data Section */}
           <div>
             <h3 className="text-lg font-medium mb-3">Submitted Information</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -67,6 +101,11 @@ const KycDetailsTab = ({ kycDetails, kycStatus }: KycDetailsTabProps) => {
               </div>
             </div>
           </div>
+
+          <div className="btn btn-primary bg-primary" onClick={() => socketCall()}>
+            KYC Request Data
+          </div>
+
         </div>
       </CardContent>
     </Card>

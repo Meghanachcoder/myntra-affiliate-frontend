@@ -1,12 +1,16 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
 
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
-import DashboardTabContent from "@/components/dashboard/DashboardTabContent";
 import AllInvoicesTab from "@/components/dashboard/AllInvoicesTab";
 import KycDetailsTab from "@/components/dashboard/KycDetailsTab";
+
+import KycStatusCard from '@/components/dashboard/KycStatusCard';
+import PayoutCard from '@/components/dashboard/PayoutCard';
+import RecentInvoicesCard from '@/components/dashboard/RecentInvoicesCard';
 
 import {
   useGetDashboardQuery,
@@ -15,6 +19,7 @@ import {
 import { downloadInvoiceApiCall } from "@/lib/api/services";
 
 const Dashboard = () => {
+
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -37,14 +42,12 @@ const Dashboard = () => {
     }
   }, [token, mobile, navigate, toast]);
 
-  // Fetch dashboard data
   const {
     data: dashboardData,
     isLoading: isDashboardLoading,
     error: dashboardError,
-  } = useGetDashboardQuery({ mobile });
+  } = useGetDashboardQuery();
 
-  // Fetch invoices (paginated from DB)
   const {
     data: invoiceData,
     isLoading: isInvoicesLoading,
@@ -137,7 +140,8 @@ const Dashboard = () => {
           </TabsList>
 
           <TabsContent value="home">
-            <DashboardTabContent
+
+            {/* <DashboardTabContent
               invoices={dashboardData.result.invoices || []}
               kycStatus={{
                 status: kycStatus.status,
@@ -162,7 +166,30 @@ const Dashboard = () => {
                 const invoice = dashboardData.result.invoices?.find(inv => inv.id === id);
                 handleDownloadInvoice(id, invoice?.status || "");
               }}
-            />
+            /> */}
+
+
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <KycStatusCard
+                  status={kycStatus.status}
+                  date={kycStatus.date}
+                  requestDate={kycStatus.requestDate}
+                />
+
+                <PayoutCard
+                  amount={payout_info.net_payout}
+                  subtext={`Last payout: ${payout_info.last_payout} on ${payout_info.last_payout_date}`}
+                />
+              </div>
+
+              <RecentInvoicesCard
+                invoices={invoiceData?.result || []}
+                onViewAll={() => setActiveTab("invoices")}
+                onDownload={(id, status) => handleDownloadInvoice(id, status)}
+              />
+            </div>
+
           </TabsContent>
 
           <TabsContent value="invoices">

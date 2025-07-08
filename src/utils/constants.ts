@@ -1,5 +1,5 @@
 
-export const API_URL_DOMAIN = "http://localhost:5001";
+export const API_URL_DOMAIN = "http://localhost:5001/api";
 // export const API_URL_DOMAIN = "http://13.203.138.148:5001/api";
 
 export const API_WAIT_TIMEOUT: number = 200000;

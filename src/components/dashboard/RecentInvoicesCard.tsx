@@ -49,7 +49,7 @@ const RecentInvoicesCard = ({ invoices, onViewAll, onDownload }: RecentInvoicesC
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-medium">Recent Invoices</h2>
         </div>
-        <InvoicesList 
+        <InvoicesList
           invoices={invoices}
           limit={3}
           showViewAll={true}

@@ -13,7 +13,7 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { LogOut, Search, Check, Clock, AlertTriangle, UserCheck, ExternalLink } from 'lucide-react';
 import MyntraLogo from '@/components/MyntraLogo';
-import { useGetAllAffiliatesQuery } from '@/lib/api/authApi';
+import { useGetInvoicesQuery } from '@/lib/api/commonApi';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -22,12 +22,11 @@ const AdminDashboard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  const { data, isLoading, error } = useGetAllAffiliatesQuery({
+  const { data, isLoading, error } = useGetInvoicesQuery({
     page: currentPage,
     limit: itemsPerPage,
     sortBy: 'created_at',
     sortOrder: 'ASC',
-    search: searchTerm,
   });
 
   const affiliates = data?.result?.affiliates || [];

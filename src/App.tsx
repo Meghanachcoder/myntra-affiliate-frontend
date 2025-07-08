@@ -17,23 +17,24 @@ import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminAffiliateDetails from "./pages/AdminAffiliateDetails";
 import NotFound from "./pages/NotFound";
-import { useWebSocket } from "./utils/socket";
 
 
 const queryClient = new QueryClient();
 
 const App = () => {
 
-  const { connect: connectWebSocket } = useWebSocket();
-  
-  useEffect(() => {
-    const { status, message } = connectWebSocket("7062019342", "AFF321");
-    if (status) {
-      toast.success(message);
-    } else {
-      toast.error(message);
-    }
-  }, [0]);
+  // const { connect: connectWebSocket, isAuthenticated: isAuthenticated } = useWebSocket();
+
+  // useEffectOnce(() => {
+  //   const { status, message } = connectWebSocket("7062019342", "AFF321");
+  //   if (status) {
+  //     toast.success(message);
+  //     // isAuthenticated();
+  //   } else {
+  //     toast.error(message);
+  //   }
+  // });
+
 
   return (
 

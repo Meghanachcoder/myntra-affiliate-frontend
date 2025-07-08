@@ -1,5 +1,5 @@
 import { ENDPOINTS } from "@/utils/endpoints";
-import { axiosInstancePublic ,axiosInstancePrivate} from "@/lib/apiCaller";
+import { axiosInstancePublic, axiosInstancePrivate } from "@/lib/apiCaller";
 
 
 export const signupApiCall = async (payload: any) => {
@@ -57,11 +57,11 @@ export const getKycStatusApiCall = async () => {
   }
 };
 
-export const getDashboardApiCall = async (mobile: string) => {
+export const getDashboardApiCall = async () => {
   try {
-     const url = `${ENDPOINTS.dashboard}/${mobile}`;
-  const response = await axiosInstancePrivate.get(url);
-  return response;
+    const url = `${ENDPOINTS.dashboard}`;
+    const response = await axiosInstancePrivate.get(url);
+    return response;
   } catch (error) {
     throw error;
   }
@@ -98,10 +98,11 @@ export const getInvoicesApiCall = async (params: {
 export const downloadInvoiceApiCall = async (invoiceId: string) => {
   try {
     const response = await axiosInstancePrivate.get(`/invoice/${invoiceId}/download`, {
-      responseType: 'blob', 
+      responseType: 'blob',
     });
     return response;
   } catch (error) {
     throw error;
   }
 };
+

@@ -51,137 +51,137 @@ const Login = () => {
   const phoneInitialValues = { mobileNumber: '' };
 
   const handleSendOtp = async (values: any) => {
-  logHelper(TAG, " ===> handleSendOtp", values);
-  setIsLoading(true);
+    logHelper(TAG, " ===> handleSendOtp", values);
+    setIsLoading(true);
 
-  try {
-    const formData = { mobile: values.mobileNumber.toString() };
+    try {
+      const formData = { mobile: values.mobileNumber.toString() };
 
-    loginSendOtp(formData, {
-      onSuccess: (res: any) => {
-        logHelper(TAG, " ===> res", res);
+      loginSendOtp(formData, {
+        onSuccess: (res: any) => {
+          logHelper(TAG, " ===> res", res);
 
-        if (res?.status !== 200 || res?.success !== true) {
+          if (res?.status !== 200 || res?.success !== true) {
+            toast({
+              title: "Failed to Send OTP",
+              description: res?.msg || "Something went wrong",
+              variant: "destructive"
+            });
+          } else {
+            toast({ title: res?.msg, variant: "default" });
+
+            // ✅ Save mobile number to state
+            setMobileNumber(values.mobileNumber);
+
+            // ✅ Go to OTP screen
+            setStep('otp');
+          }
+        },
+        onError: (err: any) => {
+          logHelper(TAG, " ===> err", err);
           toast({
             title: "Failed to Send OTP",
-            description: res?.msg || "Something went wrong",
+            description: err?.data?.message || "Something went wrong",
             variant: "destructive"
           });
-        } else {
-          toast({ title: res?.msg, variant: "default" });
-
-          // ✅ Save mobile number to state
-          setMobileNumber(values.mobileNumber);
-
-          // ✅ Go to OTP screen
-          setStep('otp');
         }
-      },
-      onError: (err: any) => {
-        logHelper(TAG, " ===> err", err);
-        toast({
-          title: "Failed to Send OTP",
-          description: err?.data?.message || "Something went wrong",
-          variant: "destructive"
-        });
-      }
-    });
-  } catch (error: any) {
-    logHelper(TAG, " ===> API Error", error);
-  } finally {
-    setIsLoading(false);
-  }
-};
+      });
+    } catch (error: any) {
+      logHelper(TAG, " ===> API Error", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
 
   const handleVerifyOtp = async (values: any) => {
-  logHelper(TAG, " ===> handleVerifyOtp", values);
+    logHelper(TAG, " ===> handleVerifyOtp", values);
 
-  setIsLoading(true);
+    setIsLoading(true);
 
-  try {
-    const formData = {
-      mobile: mobileNumber,
-      otp: values.otp.toString().trim()
-    };
+    try {
+      const formData = {
+        mobile: mobileNumber,
+        otp: values.otp.toString().trim()
+      };
 
-    loginVerifyOtp(formData, {
-      onSuccess: (res: any) => {
-        logHelper(TAG, " ===> res", res);
+      loginVerifyOtp(formData, {
+        onSuccess: (res: any) => {
+          logHelper(TAG, " ===> res", res);
 
-        const user = res?.result?.user;
+          const user = res?.result?.user;
 
-        if (res?.status === 403 && res?.result?.requireKyc) {
-          toast({
-            title: 'KYC Not Completed',
-            description: res?.msg || 'Redirecting to KYC...',
-          });
+          if (res?.status === 403 && res?.result?.requireKyc) {
+            toast({
+              title: 'KYC Not Completed',
+              description: res?.msg || 'Redirecting to KYC...',
+            });
+
+            localStorage.setItem('auth_token', res?.result?.accessToken);
+            localStorage.setItem('refresh_token', res?.result?.refreshToken);
+            localStorage.setItem('user_details', JSON.stringify(user));
+
+            setTimeout(() => {
+              navigate('/kyc', { state: { mobile: user?.mobile } });
+            }, 100);
+            return;
+          }
+
+          if (res?.status !== 200 || res?.success !== true) {
+            toast({
+              title: "Failed to Verify OTP",
+              description: res?.msg || "Something went wrong",
+              variant: "destructive"
+            });
+            return;
+          }
+
+          toast({ title: res?.msg || "Login Successful", variant: "default" });
 
           localStorage.setItem('auth_token', res?.result?.accessToken);
+          localStorage.setItem('user_mobile', user?.mobile);
           localStorage.setItem('refresh_token', res?.result?.refreshToken);
           localStorage.setItem('user_details', JSON.stringify(user));
 
-          setTimeout(() => {
-  navigate('/kyc', { state: { mobile: user?.mobile } });
-}, 100); 
-          return;
-        }
+          navigate('/dashboard');
+        },
+        onError: (err: any) => {
+          logHelper(TAG, " ===> err", err);
 
-        if (res?.status !== 200 || res?.success !== true) {
+          const status = err?.response?.status;
+          const msg = err?.response?.data?.msg;
+          const result = err?.response?.data?.result;
+
+          // ✅ Handle 403 and requireKyc here
+          if (status === 403 && result?.requireKyc) {
+            toast({
+              title: 'KYC Not Completed',
+              description: msg || 'Redirecting to KYC...',
+            });
+
+            localStorage.setItem('auth_token', result?.accessToken);
+            localStorage.setItem('refresh_token', result?.refreshToken);
+            localStorage.setItem('user_details', JSON.stringify(result?.user));
+
+            navigate('/kyc', { state: { mobile: result?.user?.mobile } });
+            return;
+          }
+
+          // ❌ All other errors
           toast({
             title: "Failed to Verify OTP",
-            description: res?.msg || "Something went wrong",
-            variant: "destructive"
+            description: msg || "Something went wrong",
+            variant: "destructive",
           });
-          return;
         }
+      })
 
-        toast({ title: res?.msg || "Login Successful", variant: "default" });
-
-        localStorage.setItem('auth_token', res?.result?.accessToken);
-        localStorage.setItem('user_mobile', user?.mobile);
-        localStorage.setItem('refresh_token', res?.result?.refreshToken);
-        localStorage.setItem('user_details', JSON.stringify(user));
-
-        navigate('/dashboard');
-      },
-      onError: (err: any) => {
-  logHelper(TAG, " ===> err", err);
-
-  const status = err?.response?.status;
-  const msg = err?.response?.data?.msg;
-  const result = err?.response?.data?.result;
-
-  // ✅ Handle 403 and requireKyc here
-  if (status === 403 && result?.requireKyc) {
-    toast({
-      title: 'KYC Not Completed',
-      description: msg || 'Redirecting to KYC...',
-    });
-
-    localStorage.setItem('auth_token', result?.accessToken);
-    localStorage.setItem('refresh_token', result?.refreshToken);
-    localStorage.setItem('user_details', JSON.stringify(result?.user));
-
-    navigate('/kyc', { state: { mobile: result?.user?.mobile } });
-    return;
-  }
-
-  // ❌ All other errors
-  toast({
-    title: "Failed to Verify OTP",
-    description: msg || "Something went wrong",
-    variant: "destructive",
-  });
-}
-    })
-
-  } catch (error: any) {
-    logHelper(TAG, " ===> API Error", error);
-  } finally {
-    setIsLoading(false);
-  }
-};
+    } catch (error: any) {
+      logHelper(TAG, " ===> API Error", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
 
 
