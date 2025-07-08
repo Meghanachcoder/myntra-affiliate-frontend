@@ -96,14 +96,15 @@ export const getInvoicesApiCall = async (params: {
 
 export const downloadInvoiceApiCall = async (invoiceId: string) => {
   try {
-    const response = await axiosInstancePrivate.get(`/invoice/${invoiceId}/download`, {
-      responseType: 'blob', 
+    const response = await axiosInstancePrivate.get(ENDPOINTS.downloadInvoice(invoiceId), {
+      responseType: 'blob',
     });
     return response;
   } catch (error) {
     throw error;
   }
 };
+
 export const getAdminAffiliatesApiCall = async (params: {
   page?: number;
   limit?: number;
@@ -118,9 +119,38 @@ export const getAdminAffiliatesApiCall = async (params: {
     limit: params.limit?.toString() || '10',
     ...(params.search ? { search: params.search } : {})
   });
-
-  const res = await axiosInstancePrivate.get(`${ENDPOINTS.adminAffiliates}?${queryParams.toString()}`);
+  try {
+     const res = await axiosInstancePrivate.get(`${ENDPOINTS.adminAffiliates}?${queryParams.toString()}`);
   return res;
+    
+  } catch (error) {
+    throw(error)
+  }
+ 
 };
 
+
+
+
+
+export const getAffiliateByIdApiCall = async (id: string) => {
+  try {
+    const response = await axiosInstancePrivate.get(ENDPOINTS.getAffiliateById(id));
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+
+export const updateKycStatusApiCall = async (payload: { id: string; status: string }) => {
+  try {
+    const response = await axiosInstancePrivate.put(ENDPOINTS.updateKycStatus(payload.id), {
+      status: payload.status,
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
 

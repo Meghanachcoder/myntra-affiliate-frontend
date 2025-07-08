@@ -1,6 +1,6 @@
 import { useMutation ,useQuery} from "@tanstack/react-query";
 
-import {signupApiCall, verifyOtpApiCall, loginApiCall, loginVerifyOtpApiCall ,submitKycApiCall, getKycStatusApiCall,getDashboardApiCall,getInvoicesApiCall,getAdminAffiliatesApiCall} from "./services";
+import {signupApiCall, verifyOtpApiCall, loginApiCall, loginVerifyOtpApiCall ,submitKycApiCall, getKycStatusApiCall,getDashboardApiCall,getInvoicesApiCall,getAdminAffiliatesApiCall,getAffiliateByIdApiCall,updateKycStatusApiCall} from "./services";
 
 
 export function useSignupMutation(options?: any) {
@@ -134,5 +134,28 @@ export function useGetAllAdminAffiliatesQuery({
       return res?.data;
     },
     enabled,
+  });
+}
+
+
+export function useGetAffiliateByIdQuery(id: string) {
+  return useQuery({
+    queryKey: ['getAffiliateById', id],
+    queryFn: async () => {
+      const res = await getAffiliateByIdApiCall(id);
+      return res?.data;
+    },
+    enabled: !!id, 
+  });
+}
+
+export function useUpdateKycStatusMutation(options?: any) {
+  return useMutation({
+    mutationKey: ['updateKycStatus'],
+    mutationFn: async (payload: { id: string; status: string }) => {
+      const res = await updateKycStatusApiCall(payload);
+      return res?.data;
+    },
+    ...options,
   });
 }

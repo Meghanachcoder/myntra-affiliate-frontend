@@ -9,18 +9,21 @@ import AffiliateDetailsHeader from '@/components/admin/AffiliateDetailsHeader';
 import AffiliateKycTab from '@/components/admin/AffiliateKycTab';
 import AffiliatePaymentsTab from '@/components/admin/AffiliatePaymentsTab';
 import AffiliateInvoicesTab from '@/components/admin/AffiliateInvoicesTab';
+
 import {
   useGetAffiliateByIdQuery,
-  useUpdateKycStatusMutation
-} from '@/lib/api/adminApi';
-
+  useUpdateKycStatusMutation,
+  useProcessPaymentMutation,
+} from '@/lib/api/commonApi';
+import { downloadInvoiceApiCall } from '@/lib/api/services'; // direct api call for download
 const AdminAffiliateDetails = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [activeTab, setActiveTab] = useState('kyc');
 
-  const { data: affiliate, isLoading } = useGetAffiliateByIdQuery(id ?? '');
-  const [updateKycStatus] = useUpdateKycStatusMutation();
+  const { data: affiliate, isLoading, refetch } = useGetAffiliateByIdQuery(id ?? '');
+  const updateKycMutation = useUpdateKycStatusMutation();
+  const processPaymentMutation = useProcessPaymentMutation();
 
   if (isLoading || !affiliate) {
     return <div className="p-4">Loading...</div>;
@@ -29,7 +32,8 @@ const AdminAffiliateDetails = () => {
   const handleVerifyKyc = async (isApproved: boolean) => {
     const newStatus = isApproved ? 'Verified' : 'Rejected';
     try {
-      await updateKycStatus({ id: affiliate.id, status: newStatus }).unwrap();
+      await updateKycMutation.mutateAsync({ id: affiliate.id, status: newStatus });
+      await refetch(); // refresh updated status
 
       toast({
         title: `KYC ${newStatus}`,
@@ -44,25 +48,53 @@ const AdminAffiliateDetails = () => {
     }
   };
 
-  const handleProcessPayment = () => {
-    toast({
-      title: "Payment Processed",
-      description: `Payment of ${affiliate.currentPayment.amount} for affiliate ${affiliate.id} has been initiated.`,
-    });
+  const handleProcessPayment = async () => {
+    try {
+      const res = await processPaymentMutation.mutateAsync(affiliate.id);
+      await refetch(); // refresh affiliate after payout
+
+      toast({
+        title: 'Payout Successful',
+        description: `₹${affiliate.currentPayment.amount} paid. Razorpay Ref ID: ${res?.razorpayPayoutId || 'N/A'}`,
+      });
+    } catch (err) {
+      toast({
+        title: 'Payout Failed',
+        description: 'Could not initiate affiliate payout.',
+        variant: 'destructive',
+      });
+    }
   };
 
-  const handleDownloadInvoice = (invoiceId: string) => {
-    toast({
-      title: "Invoice Downloaded",
-      description: `Invoice ${invoiceId} has been downloaded.`,
-    });
+  const handleDownloadInvoice = async (invoiceId: string) => {
+    try {
+      const response = await downloadInvoiceApiCall(invoiceId);
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `invoice-${invoiceId}.pdf`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+
+      toast({
+        title: 'Invoice Downloaded',
+        description: `Invoice ${invoiceId} has been downloaded.`,
+      });
+    } catch {
+      toast({
+        title: 'Download Failed',
+        description: 'Unable to download the invoice.',
+        variant: 'destructive',
+      });
+    }
   };
 
   const handleLogout = () => {
     localStorage.removeItem('isAuthenticated');
     toast({
-      title: "Logged out",
-      description: "You have been successfully logged out.",
+      title: 'Logged out',
+      description: 'You have been successfully logged out.',
     });
     navigate('/login');
   };

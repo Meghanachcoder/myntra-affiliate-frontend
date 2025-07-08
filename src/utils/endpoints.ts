@@ -9,4 +9,8 @@ export const ENDPOINTS = {
   dashboard: `/dashboard`,
   invoices: `/dashboard/invoices`,
   adminAffiliates: '/admin/affiliates',
+  getAffiliateById: (id: string) => `/admin/affiliates/${id}`,
+  updateKycStatus: (id: string) => `/admin/affiliates/${id}/kyc-status`,
+  downloadInvoice: (id: string) => `/invoice/${id}/download`,
+  processPayout: `/admin/affiliates/payout`, // already static
 };
