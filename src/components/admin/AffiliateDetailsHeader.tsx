@@ -1,19 +1,21 @@
-
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Check, Clock, AlertTriangle } from 'lucide-react';
 
 type AffiliateDetailsHeaderProps = {
-  affiliate: {
-    id: string;
-    name: string;
-    phone: string;
-    kycStatus: string;
-    netPayout: string;
-  };
+  affiliate: any; 
 };
 
 const AffiliateDetailsHeader = ({ affiliate }: AffiliateDetailsHeaderProps) => {
+  const name =
+    affiliate.first_name || affiliate.last_name
+      ? `${affiliate.first_name || ''} ${affiliate.last_name || ''}`.trim()
+      : 'N/A';
+
+  const phone = affiliate.mobile || 'N/A';
+  const kycStatus = affiliate.kyc?.status?.toLowerCase() || 'pending';
+  const netPayout = affiliate.payoutInfo?.netPayout || 0;
+
   const getStatusBadge = (status: string) => {
     if (status === 'verified') {
       return (
@@ -42,23 +44,23 @@ const AffiliateDetailsHeader = ({ affiliate }: AffiliateDetailsHeaderProps) => {
         <div className="flex flex-col space-y-4 mb-6">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
             <div>
-              <h2 className="text-xl sm:text-2xl font-bold">{affiliate.name}</h2>
-              <p className="text-gray-500 text-sm sm:text-base">{affiliate.id}</p>
+              <h2 className="text-xl sm:text-2xl font-bold">{name}</h2>
+              <p className="text-gray-500 text-sm sm:text-base">{affiliate.affiliateId}</p>
             </div>
             <div className="self-start sm:self-auto">
-              {getStatusBadge(affiliate.kycStatus)}
+              {getStatusBadge(kycStatus)}
             </div>
           </div>
         </div>
-        
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
           <div>
             <h3 className="text-sm font-medium text-gray-500 mb-1">Contact Information</h3>
-            <p className="text-sm sm:text-base break-all">{affiliate.phone}</p>
+            <p className="text-sm sm:text-base break-all">{phone}</p>
           </div>
           <div>
             <h3 className="text-sm font-medium text-gray-500 mb-1">Net Payout Till Date</h3>
-            <p className="text-sm sm:text-base font-medium text-green-600">₹{affiliate.netPayout}</p>
+            <p className="text-sm sm:text-base font-medium text-green-600">₹{netPayout}</p>
           </div>
         </div>
       </CardContent>
