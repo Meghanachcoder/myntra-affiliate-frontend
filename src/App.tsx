@@ -38,6 +38,7 @@ const App = () => {
                 <Signup />
               </AuthRedirect>
             } />
+
             <Route path="/login" element={
               <AuthRedirect>
                 <Login />
@@ -45,7 +46,7 @@ const App = () => {
             } />
 
             <Route path="/kyc" element={
-              <ProtectedRoute requireAuth={true} requireAffiliate={true}>
+              <ProtectedRoute requireAuth={true} requireAffiliate={true} >
                 <KYC />
               </ProtectedRoute>
             } />
