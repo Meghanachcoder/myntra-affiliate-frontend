@@ -10,7 +10,7 @@ export const ENDPOINTS = {
   invoices: `/dashboard/invoices`,
   adminAffiliates: '/admin/affiliates',
   getAffiliateById: (id: string) => `/admin/affiliates/${id}`,
-  updateKycStatus: (id: string) => `/admin/affiliates/${id}/kyc-status`,
+  updateKycStatus: (id: string) => `/admin/affiliates/${id}/kyc`,
   downloadInvoice: (id: string) => `/invoice/${id}/download`,
-  processPayout: `/admin/affiliates/payout`, // already static
+  processPayout: `/admin/affiliates/payout`, 
 };

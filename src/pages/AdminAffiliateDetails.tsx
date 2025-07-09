@@ -15,7 +15,7 @@ import {
   useUpdateKycStatusMutation,
   useProcessPaymentMutation,
 } from '@/lib/api/commonApi';
-import { downloadInvoiceApiCall } from '@/lib/api/services'; // direct api call for download
+import { downloadInvoiceApiCall } from '@/lib/api/services'; 
 const AdminAffiliateDetails = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
@@ -32,12 +32,17 @@ const AdminAffiliateDetails = () => {
   const handleVerifyKyc = async (isApproved: boolean) => {
     const newStatus = isApproved ? 'Verified' : 'Rejected';
     try {
-      await updateKycMutation.mutateAsync({ id: affiliate.id, status: newStatus });
+      await updateKycMutation.mutateAsync({
+        id: affiliate.affiliateId, 
+        status: newStatus.toLowerCase(),
+        reason: isApproved ? '' : 'KYC rejected by admin', 
+});
+
       await refetch(); // refresh updated status
 
       toast({
         title: `KYC ${newStatus}`,
-        description: `KYC for affiliate ${affiliate.id} has been ${newStatus.toLowerCase()}.`,
+        description: `KYC for affiliate ${affiliate.affiliateId} has been ${newStatus.toLowerCase()}.`,
       });
     } catch (err) {
       toast({
@@ -105,7 +110,7 @@ const AdminAffiliateDetails = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
+     
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div className="flex items-center">
@@ -124,7 +129,7 @@ const AdminAffiliateDetails = () => {
         </div>
       </header>
 
-      {/* Main Content */}
+     
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         <Button
           variant="ghost"
@@ -146,10 +151,11 @@ const AdminAffiliateDetails = () => {
 
           <TabsContent value="kyc">
             <AffiliateKycTab
-              kycDetails={affiliate.kycDetails}
-              kycStatus={affiliate.kycStatus}
-              onVerify={handleVerifyKyc}
+            kycDetails={affiliate.kyc}
+            kycStatus={affiliate.kyc?.status}
+            onVerify={handleVerifyKyc}
             />
+
           </TabsContent>
 
           <TabsContent value="payments">

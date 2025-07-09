@@ -32,6 +32,7 @@ const AdminDashboard = () => {
     page: currentPage,
     limit: itemsPerPage,
     sortBy: 'created_at',
+    search:searchTerm,
     sortOrder: 'ASC',
   });
 
@@ -184,7 +185,7 @@ const AdminDashboard = () => {
                           <Button
                             size="sm"
                             variant="ghost"
-                            onClick={() => handleViewAffiliate(a.id)}
+                            onClick={() => handleViewAffiliate(a.affiliate_id)}
                             className="flex items-center text-xs sm:text-sm"
                           >
                             <ExternalLink className="h-4 w-4 mr-1" />

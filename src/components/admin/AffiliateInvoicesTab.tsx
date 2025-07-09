@@ -19,6 +19,16 @@ type AffiliateInvoicesTabProps = {
 };
 
 const AffiliateInvoicesTab = ({ invoices, onDownloadInvoice }: AffiliateInvoicesTabProps) => {
+  if (!Array.isArray(invoices)) {
+  return (
+    <Card>
+      <CardContent className="p-4 sm:p-6">
+        <p className="text-sm text-red-500">Error: Invoices data is not valid.</p>
+      </CardContent>
+    </Card>
+  );
+}
+
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
@@ -49,41 +59,50 @@ const AffiliateInvoicesTab = ({ invoices, onDownloadInvoice }: AffiliateInvoices
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {currentInvoices.map((invoice) => (
-                  <TableRow key={invoice.id}>
-                    <TableCell className="font-medium">
-                      <div>
-                        <div>{invoice.id}</div>
-                        <div className="text-xs text-gray-500 sm:hidden">{invoice.date}</div>
-                      </div>
-                    </TableCell>
-                    <TableCell className="hidden sm:table-cell">{invoice.date}</TableCell>
-                    <TableCell>{invoice.amount}</TableCell>
-                    <TableCell>
-                      {invoice.status === 'Paid' ? (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                          {invoice.status}
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                          {invoice.status}
-                        </span>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <Button 
-                        size="sm" 
-                        variant="ghost"
-                        onClick={() => onDownloadInvoice(invoice.id)}
-                        className="flex items-center text-xs"
-                      >
-                        <FileText className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-                        <span className="hidden sm:inline">Download</span>
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
+              {currentInvoices.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center text-sm text-gray-500 py-4">
+                    No invoices found.
+                  </TableCell>
+                </TableRow>
+              ) : (
+                currentInvoices.map((invoice) => (
+      <TableRow key={invoice.id}>
+        <TableCell className="font-medium">
+          <div>
+            <div>{invoice.id}</div>
+            <div className="text-xs text-gray-500 sm:hidden">{invoice.date}</div>
+          </div>
+        </TableCell>
+        <TableCell className="hidden sm:table-cell">{invoice.date}</TableCell>
+        <TableCell>{invoice.amount}</TableCell>
+        <TableCell>
+          {invoice.status === 'Paid' ? (
+            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+              {invoice.status}
+            </span>
+          ) : (
+            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+              {invoice.status}
+            </span>
+          )}
+        </TableCell>
+        <TableCell>
+          <Button 
+            size="sm" 
+            variant="ghost"
+            onClick={() => onDownloadInvoice(invoice.id)}
+            className="flex items-center text-xs"
+          >
+            <FileText className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+            <span className="hidden sm:inline">Download</span>
+          </Button>
+        </TableCell>
+      </TableRow>
+    ))
+  )}
+</TableBody>
+
             </Table>
           </div>
         </div>
@@ -138,3 +157,4 @@ const AffiliateInvoicesTab = ({ invoices, onDownloadInvoice }: AffiliateInvoices
 };
 
 export default AffiliateInvoicesTab;
+

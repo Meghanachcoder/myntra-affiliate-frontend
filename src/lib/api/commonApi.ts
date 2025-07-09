@@ -146,7 +146,15 @@ export function useGetAffiliateByIdQuery(id: string) {
     queryKey: ['getAffiliateById', id],
     queryFn: async () => {
       const res = await getAffiliateByIdApiCall(id);
-      return res?.data;
+      return {
+  ...res?.data?.result,
+  kyc: {
+    ...res?.data?.result.kyc,
+    accountNumber: res?.data?.result.kyc?.account_number,
+    accountName: res?.data?.result.kyc?.account_name,
+    
+  },
+};
     },
     enabled: !!id, 
   });

@@ -145,9 +145,11 @@ export const getAffiliateByIdApiCall = async (id: string) => {
 
 export const updateKycStatusApiCall = async (payload: { id: string; status: string }) => {
   try {
-    const response = await axiosInstancePrivate.put(ENDPOINTS.updateKycStatus(payload.id), {
-      status: payload.status,
-    });
+    const response = await axiosInstancePrivate.post(ENDPOINTS.updateKycStatus(payload.id), {
+  status: payload.status,
+  reason: payload.reason || '',
+});
+
     return response;
   } catch (error) {
     throw error;

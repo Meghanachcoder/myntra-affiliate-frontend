@@ -21,6 +21,15 @@ type AffiliatePaymentsTabProps = {
 };
 
 const AffiliatePaymentsTab = ({ currentPayment, onProcessPayment }: AffiliatePaymentsTabProps) => {
+  if (!currentPayment) {
+    return (
+      <Card>
+        <CardContent className="p-4 sm:p-6">
+          <p className="text-sm text-gray-500">No payment data available.</p>
+        </CardContent>
+      </Card>
+    );
+  }
   const isPending = currentPayment.status === 'Pending';
   
   return (
@@ -54,7 +63,7 @@ const AffiliatePaymentsTab = ({ currentPayment, onProcessPayment }: AffiliatePay
           <Separator className="my-3" />
           <div className="flex justify-between py-2 font-semibold">
             <span className="text-sm sm:text-base">Final Amount</span>
-            <span className="text-sm sm:text-base">{currentPayment.breakdown[currentPayment.breakdown.length - 1].value}</span>
+            <span className="text-sm sm:text-base">{currentPayment.breakdown.length > 0 ? currentPayment.breakdown[currentPayment.breakdown.length - 1].value : 'N/A'}</span>
           </div>
         </div>
         
