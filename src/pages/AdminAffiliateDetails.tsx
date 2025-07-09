@@ -140,7 +140,14 @@ const AdminAffiliateDetails = () => {
           Back to Affiliates List
         </Button>
 
-        <AffiliateDetailsHeader affiliate={affiliate} />
+        <AffiliateDetailsHeader affiliate={{
+  id: affiliate.affiliateId,
+  name: affiliate.first_name || affiliate.last_name ? `${affiliate.first_name || ''} ${affiliate.last_name || ''}`.trim() : 'N/A',
+  phone: affiliate.mobile || 'N/A',
+  kycStatus: affiliate.kyc?.status || 'pending',
+  netPayout: affiliate.payoutInfo?.netPayout?.toString() || '0',
+}} />
+
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6 sm:mt-8">
           <TabsList className="bg-white shadow-sm rounded-md w-full sm:w-auto grid grid-cols-3 sm:flex">

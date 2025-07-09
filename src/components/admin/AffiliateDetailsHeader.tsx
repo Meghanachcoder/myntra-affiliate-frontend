@@ -15,13 +15,13 @@ type AffiliateDetailsHeaderProps = {
 
 const AffiliateDetailsHeader = ({ affiliate }: AffiliateDetailsHeaderProps) => {
   const getStatusBadge = (status: string) => {
-    if (status === 'Verified') {
+    if (status === 'verified') {
       return (
         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
           <Check className="w-3 h-3 mr-1" /> Verified
         </span>
       );
-    } else if (status === 'Pending') {
+    } else if (status === 'pending') {
       return (
         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
           <Clock className="w-3 h-3 mr-1" /> Pending
@@ -58,7 +58,7 @@ const AffiliateDetailsHeader = ({ affiliate }: AffiliateDetailsHeaderProps) => {
           </div>
           <div>
             <h3 className="text-sm font-medium text-gray-500 mb-1">Net Payout Till Date</h3>
-            <p className="text-sm sm:text-base font-medium text-green-600">{affiliate.netPayout}</p>
+            <p className="text-sm sm:text-base font-medium text-green-600">₹{affiliate.netPayout}</p>
           </div>
         </div>
       </CardContent>
