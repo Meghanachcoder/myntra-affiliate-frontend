@@ -11,6 +11,7 @@ import { FormError } from "@/components/stack/stack";
 import { kycSchema } from "@/schema/common";
 import { useSubmitKycMutation, useGetKycStatusQuery } from "@/lib/api/commonApi";
 import { logHelper } from "@/utils/utils";
+import { clearAuth } from "@/utils/auth";
 
 const TAG = "KYC: ";
 
@@ -45,14 +46,26 @@ const KYC = () => {
 
     setIsSubmitting(true);
 
+
     submitKyc(values, {
-      onSuccess: (res: any) => {
+      onSuccess: async (res: any) => {
+
+        logHelper(TAG, " KYC Success ===> ", res);
+
         if (res?.status !== 200 || res?.success !== true) {
           toast({ title: "KYC Failed", description: res?.msg || "Something went wrong", variant: "destructive" });
         } else {
+
+          const userDetails = localStorage.getItem("user_details");
+          const user = JSON.parse(userDetails || "{}");
+          user.is_kyc_submitted = true;
+          localStorage.setItem("user_details", JSON.stringify(user));
+
           toast({ title: "KYC Submitted", description: res?.msg || "KYC successfully submitted", });
-          navigate("/dashboard");
-          localStorage.setItem("kycStatus", "completed");
+          await new Promise(resolve => setTimeout(resolve, 2000)).then(() => {
+            window.location.reload();
+          });
+
         }
       },
       onError: (error: any) => {
@@ -61,27 +74,25 @@ const KYC = () => {
       onSettled: () => {
         setIsSubmitting(false);
       }
+
     });
 
   }
 
   useEffect(() => {
     if (kycStatus?.result?.status === "completed") {
-      toast({
-        title: "KYC Already Submitted",
-        description: "Redirecting to dashboard...",
-      });
+      toast({ title: "KYC Already Submitted", description: "Redirecting to dashboard..." });
       navigate("/dashboard");
     }
   }, [kycStatus, navigate, toast]);
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-b-4 border-myntra-purple"></div>
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className="flex justify-center items-center h-screen">
+  //       <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-b-4 border-myntra-purple"></div>
+  //     </div>
+  //   );
+  // }
 
 
   logHelper(TAG, " kycStatus ===> ", kycStatus);
@@ -95,6 +106,16 @@ const KYC = () => {
       title="KYC Verification"
       subtitle="Complete your KYC to start receiving payments"
     >
+
+      <div className="absolute top-[0.5rem] right-[0.5rem]">
+        <Button onClick={() => {
+          clearAuth();
+          navigate("/login");
+        }}>
+          Logout
+        </Button>
+      </div>
+
       <Formik
         initialValues={initialValues}
         validationSchema={kycSchema}

@@ -22,7 +22,6 @@ const Login = () => {
 
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [mobileNumber, setMobileNumber] = useState('');
 
 
   const {
@@ -69,7 +68,6 @@ const Login = () => {
             });
           } else {
             toast({ title: res?.msg, variant: "default" });
-            setMobileNumber(values.mobileNumber);
             setStep('otp');
           }
         },
@@ -95,12 +93,13 @@ const Login = () => {
     try {
 
       const formData = {
-        mobile: mobileNumber,
+        mobile: values.mobileNumber.toString().trim(),
         otp: values.otp.toString().trim()
       };
 
       loginVerifyOtp(formData, {
         onSuccess: async (res: any) => {
+          
           logHelper(TAG, " ===> res", res);
 
           const user = res?.result?.user;
@@ -138,13 +137,18 @@ const Login = () => {
           const userDetails = {
             user: user,
             accessToken: res?.result?.accessToken,
-            refreshToken: res?.result?.refreshToken
+            refreshToken: res?.result?.refreshToken,
+            is_admin: res?.result?.is_admin || false,
           };
 
           setUserDetails(userDetails);
           logHelper(TAG, " ===> i ran till here ", userDetails);
           await new Promise(resolve => setTimeout(resolve, 2000));
-          navigate('/dashboard');
+          if (res?.result?.is_admin) {
+            navigate('/admin');
+          } else {
+            navigate('/dashboard');
+          }
 
         },
         onError: (err: any) => {
@@ -305,6 +309,12 @@ const Login = () => {
             >
               {isLoading ? 'Sending OTP...' : 'Send OTP'}
             </Button>
+
+            <a href="/signup">
+              <p className="text-xs text-gray-500 text-center mt-2 underline">
+                Don't have an account? Signup
+              </p>
+            </a>
 
             {affiliateId && (<p className="text-xs text-gray-500 text-center"> Affiliate ID: {affiliateId}  </p>)}
           </Form>

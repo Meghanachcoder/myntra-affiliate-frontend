@@ -4,15 +4,17 @@ export const isAuthenticated = (): boolean => {
 };
 
 export const isAdmin = (): boolean => {
+
   const userDetails = localStorage.getItem('user_details');
   if (!userDetails) return false;
   
   try {
     const user = JSON.parse(userDetails);
-    return user.role === 'admin';
+    return user.is_admin === true;
   } catch {
     return false;
   }
+
 };
 
 export const isAffiliate = (): boolean => {
@@ -21,7 +23,19 @@ export const isAffiliate = (): boolean => {
   
   try {
     const user = JSON.parse(userDetails);
-    return user.kyc ? true : false;
+    return user.affiliate_id ? true : false;
+  } catch {
+    return false;
+  }
+};
+
+export const isKYCCompleted = (): boolean => {
+  const userDetails = localStorage.getItem('user_details');
+  if (!userDetails) return false;
+  
+  try {
+    const user = JSON.parse(userDetails);
+    return user.is_kyc_submitted === true? true : false;
   } catch {
     return false;
   }

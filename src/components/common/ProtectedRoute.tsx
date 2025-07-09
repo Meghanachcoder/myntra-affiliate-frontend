@@ -1,12 +1,14 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { logHelper } from '@/utils/utils';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
   requireAuth?: boolean;
   requireAdmin?: boolean;
   requireAffiliate?: boolean;
+  isKYCRequired?: boolean;
   redirectTo?: string;
 }
 
@@ -15,10 +17,11 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   requireAuth = true,
   requireAdmin = false,
   requireAffiliate = false,
+  isKYCRequired = false,
   redirectTo = '/login'
 }) => {
   
-  const { isAuthenticated, isAdmin, isAffiliate, isLoading } = useAuth();
+  const { isAuthenticated, isAdmin, isAffiliate, isLoading, isKYCCompleted } = useAuth();
 
   if (isLoading) {
     return (
@@ -31,19 +34,25 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     );
   }
 
-  // Check if user is authenticated
+  // logHelper(' =======> isAuthenticated ', isAuthenticated);
+  // logHelper(' =======> isAdmin ', isAdmin);
+  // logHelper(' =======> isAffiliate ', isAffiliate);
+  // logHelper(' =======> isKYCCompleted ', isKYCCompleted);
+
   if (requireAuth && !isAuthenticated) {
     return <Navigate to={redirectTo} replace />;
   }
 
-  // Check if admin access is required
   if (requireAdmin && !isAdmin) {
     return <Navigate to="/dashboard" replace />;
   }
 
-  // Check if affiliate access is required
   if (requireAffiliate && !isAffiliate) {
     return <Navigate to="/login" replace />;
+  }
+
+  if (isKYCRequired && !isKYCCompleted) {
+    return <Navigate to="/kyc" replace />;
   }
 
   return <>{children}</>;

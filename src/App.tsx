@@ -51,7 +51,7 @@ const App = () => {
             } />
 
             <Route path="/dashboard" element={
-              <ProtectedRoute requireAuth={true} requireAffiliate={true}>
+              <ProtectedRoute requireAuth={true} requireAffiliate={true} isKYCRequired={true} >
                 <Dashboard />
               </ProtectedRoute>
             } />

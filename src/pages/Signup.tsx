@@ -11,6 +11,7 @@ import { FormError } from '@/components/stack/stack';
 
 import { signupSchema, signupOtpSchema } from '@/schema/common';
 import { useSignupMutation, useVerifyOtpMutation } from '@/lib/api/commonApi';
+import { logHelper, setUserDetails } from '@/utils/utils';
 
 const TAG = "Signup:";
 
@@ -70,30 +71,41 @@ const Signup = () => {
   };
 
   const handleVerifyOtp = async (values: any) => {
+
     setIsLoading(true);
 
     const payload = {
       mobile: mobileNumber,
-      otp: values.otp,
+      otp: values.otp
     };
 
     verifyOtp(payload, {
-      onSuccess: (res: any) => {
-        if (!res?.token) {
+      onSuccess: async (res: any) => {
+
+        logHelper(TAG, ' =======> handleVerifyOtp ', res);
+
+        if (!res?.result?.accessToken) {
           toast({ title: 'Verification Failed', description: res?.msg || 'Invalid OTP', variant: 'destructive' });
           return;
         }
 
-        localStorage.setItem('auth_token', res.token);
+        const userDetails = {
+          user: res?.result?.user,
+          accessToken: res?.result?.accessToken,
+          refreshToken: res?.result?.refreshToken
+        };
+
+        setUserDetails(userDetails);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
         toast({ title: 'Account Created', description: 'Your affiliate account has been verified.' });
-        navigate('/kyc', { state: { mobile: mobileNumber } });
+
+        navigate('/kyc');
+
       },
       onError: (err: any) => {
-        toast({
-          title: 'OTP Verification Failed',
-          description: err?.response?.data?.message || 'Something went wrong',
-          variant: 'destructive',
-        });
+        logHelper(TAG, ' =======> handleVerifyOtp ', err);
+        toast({ title: 'OTP Verification Failed', description: err?.response?.data?.msg || 'Something went wrong', variant: 'destructive' });
       },
       onSettled: () => {
         setIsLoading(false);
@@ -207,6 +219,13 @@ const Signup = () => {
               and{' '}
               <a href="#" className="text-myntra-purple hover:underline">Privacy Policy</a>
             </p>
+
+
+            <a href="/login">
+              <p className="text-xs text-gray-500 text-center mt-2 underline">
+                Already have an account? Login
+              </p>
+            </a>
           </Form>
         )}
       </Formik>

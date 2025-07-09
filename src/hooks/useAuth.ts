@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { isAuthenticated, isAdmin, isAffiliate, getUserDetails } from '@/utils/auth';
+import { isAuthenticated, isAdmin, isAffiliate, getUserDetails, isKYCCompleted } from '@/utils/auth';
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -7,6 +7,7 @@ interface AuthState {
   isAffiliate: boolean;
   user: any;
   isLoading: boolean;
+  isKYCCompleted: boolean;
 }
 
 export const useAuth = () => {
@@ -15,7 +16,8 @@ export const useAuth = () => {
     isAdmin: false,
     isAffiliate: false,
     user: null,
-    isLoading: true
+    isLoading: true,
+    isKYCCompleted: false
   });
 
   useEffect(() => {
@@ -25,6 +27,7 @@ export const useAuth = () => {
         const admin = isAdmin();
         const affiliate = isAffiliate();
         const user = getUserDetails();
+        const kycCompleted = isKYCCompleted();
 
         setAuthState({
           isAuthenticated: authenticated,
@@ -32,6 +35,7 @@ export const useAuth = () => {
           isAffiliate: affiliate,
           user,
           isLoading: false,
+          isKYCCompleted: kycCompleted
         });
       } catch (error) {
         console.error('Auth check error:', error);
@@ -41,6 +45,7 @@ export const useAuth = () => {
           isAffiliate: false,
           user: null,
           isLoading: false,
+          isKYCCompleted: false
         });
       }
     };
@@ -71,6 +76,7 @@ export const useAuth = () => {
       isAffiliate: false,
       user: null,
       isLoading: false,
+      isKYCCompleted: false
     });
   };
 
