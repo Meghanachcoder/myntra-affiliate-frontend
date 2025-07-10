@@ -94,6 +94,8 @@ const Dashboard = () => {
   }
 
   const { affiliateId, kycStatus, payout_info } = dashboardData.result;
+  const formattedDate = new Date(payout_info.last_payout_date).toLocaleDateString();
+
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -125,7 +127,8 @@ const Dashboard = () => {
 
                 <PayoutCard
                   amount={payout_info.net_payout}
-                  subtext={`Last payout: ${payout_info.last_payout} on ${payout_info.last_payout_date}`}
+                  subtext={
+                  payout_info.last_payout && payout_info.last_payout_date ? `Last payout: ₹${payout_info.last_payout} on ${formattedDate}` : "No payout history available"}
                 />
               </div>
 
