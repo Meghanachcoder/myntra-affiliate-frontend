@@ -10,9 +10,9 @@ const AffiliateDetailsHeader = ({ affiliate }: AffiliateDetailsHeaderProps) => {
   const name =
     affiliate.first_name || affiliate.last_name
       ? `${affiliate.first_name || ''} ${affiliate.last_name || ''}`.trim()
-      : 'N/A';
+      : '-';
 
-  const phone = affiliate.mobile || 'N/A';
+  const phone = affiliate.mobile || '-';
   const kycStatus = affiliate.kyc?.status?.toLowerCase() || 'pending';
   const netPayout = affiliate.payoutInfo?.netPayout || 0;
 

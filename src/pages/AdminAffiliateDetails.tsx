@@ -33,16 +33,16 @@ const AdminAffiliateDetails = () => {
     const newStatus = isApproved ? 'Verified' : 'Rejected';
     try {
       await updateKycMutation.mutateAsync({
-        id: affiliate.affiliateId, 
+        id: affiliate.affiliateid, 
         status: newStatus.toLowerCase(),
         reason: isApproved ? '' : 'KYC rejected by admin', 
-});
+      });
 
       await refetch(); // refresh updated status
 
       toast({
         title: `KYC ${newStatus}`,
-        description: `KYC for affiliate ${affiliate.affiliateId} has been ${newStatus.toLowerCase()}.`,
+        description: `KYC for affiliate ${affiliate.id} has been ${newStatus.toLowerCase()}.`,
       });
     } catch (err) {
       toast({
@@ -55,7 +55,7 @@ const AdminAffiliateDetails = () => {
 
   const handleProcessPayment = async () => {
     try {
-      const res = await processPaymentMutation.mutateAsync(affiliate.id);
+      const res = await processPaymentMutation.mutateAsync(affiliate.affiliateId);
       await refetch(); // refresh affiliate after payout
 
       toast({

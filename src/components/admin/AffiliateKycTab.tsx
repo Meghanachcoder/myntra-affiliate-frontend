@@ -47,11 +47,11 @@ const AffiliateKycTab = ({ kycDetails, kycStatus, onVerify }: AffiliateKycTabPro
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             <div>
               <h3 className="text-sm font-medium text-gray-500 mb-1">PAN</h3>
-              <p className="text-sm sm:text-base">{kycDetails.pan ?? 'N/A'}</p>
+              <p className="text-sm sm:text-base">{kycDetails.pan ?? '-'}</p>
             </div>
             <div>
               <h3 className="text-sm font-medium text-gray-500 mb-1">GSTIN</h3>
-              <p className="text-sm sm:text-base">{kycDetails.gstin ?? 'N/A'}</p>
+              <p className="text-sm sm:text-base">{kycDetails.gstin ?? '-'}</p>
             </div>
           </div>
         </CardContent>
@@ -65,23 +65,23 @@ const AffiliateKycTab = ({ kycDetails, kycStatus, onVerify }: AffiliateKycTabPro
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             <div>
               <h3 className="text-sm font-medium text-gray-500 mb-1">Account Number</h3>
-              <p className="text-sm sm:text-base break-all">{kycDetails.accountNumber ?? 'N/A'}</p>
+              <p className="text-sm sm:text-base break-all">{kycDetails.accountNumber ?? '-'}</p>
             </div>
             <div>
               <h3 className="text-sm font-medium text-gray-500 mb-1">IFSC Code</h3>
-              <p className="text-sm sm:text-base">{kycDetails.ifsc ?? 'N/A'}</p>
+              <p className="text-sm sm:text-base">{kycDetails.ifsc ?? '-'}</p>
             </div>
             <div>
               <h3 className="text-sm font-medium text-gray-500 mb-1">Account Holder Name</h3>
-              <p className="text-sm sm:text-base">{kycDetails.accountName ?? 'N/A'}</p>
+              <p className="text-sm sm:text-base">{kycDetails.accountName ?? '-'}</p>
             </div>
             <div>
               <h3 className="text-sm font-medium text-gray-500 mb-1">Bank Name</h3>
-              <p className="text-sm sm:text-base">{kycDetails.bankName ?? 'N/A'}</p>
+              <p className="text-sm sm:text-base">{kycDetails.bankName ?? '-'}</p>
             </div>
             <div className="md:col-span-2">
               <h3 className="text-sm font-medium text-gray-500 mb-1">Account Type</h3>
-              <p className="text-sm sm:text-base">{kycDetails.accountType ?? 'N/A'}</p>
+              <p className="text-sm sm:text-base">{kycDetails.accountType ?? '-'}</p>
             </div>
           </div>
         </CardContent>

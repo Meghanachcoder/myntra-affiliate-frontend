@@ -163,7 +163,7 @@ const AdminDashboard = () => {
                         <TableCell>{a.affiliate_id}</TableCell>
                         <TableCell>
                           <div className="font-medium">{a.first_name || '-'}</div>
-                          <div className="text-sm text-gray-500 sm:hidden">{a.mobile}</div>
+                          <div className="text-sm text-gray-500 sm:hidden">{a.mobile || '-'}</div>
                         </TableCell>
                         <TableCell className="hidden sm:table-cell">{a.mobile}</TableCell>
                         <TableCell>{getStatusBadge(a.kyc)}</TableCell>
