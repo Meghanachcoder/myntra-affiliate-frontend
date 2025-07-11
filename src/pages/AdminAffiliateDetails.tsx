@@ -96,7 +96,7 @@ const AdminAffiliateDetails = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('isAuthenticated');
+    localStorage.removeItem('auth_token');
     toast({
       title: 'Logged out',
       description: 'You have been successfully logged out.',
