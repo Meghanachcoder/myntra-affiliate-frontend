@@ -310,14 +310,6 @@ const Login = () => {
             >
               {isLoading ? 'Sending OTP...' : 'Send OTP'}
             </Button>
-
-            <a href="/signup">
-              <p className="text-xs text-gray-500 text-center mt-2 underline">
-                Don't have an account? Signup
-              </p>
-            </a>
-
-            {affiliateId && (<p className="text-xs text-gray-500 text-center"> Affiliate ID: {affiliateId}  </p>)}
           </Form>
         )}
       </Formik>

@@ -16,6 +16,7 @@ type InvoicesListProps = {
   invoices: Invoice[];
   limit?: number;
   showViewAll?: boolean;
+  //onDownload?: (invoiceId: string, status: string) => void;
   onViewAll?: () => void;
 };
 
@@ -88,6 +89,7 @@ const InvoicesList = ({
                 size="sm" 
                 variant="ghost"
                 className="flex items-center"
+                //onClick={() => onDownload && onDownload(invoice.id, invoice.status)}
               >
                 <FileText className="h-4 w-4 mr-1" />
                 Download

@@ -203,8 +203,7 @@ const Signup = () => {
               onBlur={(e: any) => handleBlur(e)}
               maxLength={10}
             />
-            {errors.mobileNumber && touched.mobileNumber && (<FormError errors={{ mobileNumber: errors.mobileNumber }} />)}
-
+            {errors.mobileNumber && <FormError errors={errors.mobileNumber} />}
             <Button
               type="submit"
               className="w-full bg-myntra-purple hover:bg-myntra-dark mt-2"

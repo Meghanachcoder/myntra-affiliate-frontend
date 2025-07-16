@@ -152,18 +152,6 @@ const Dashboard = () => {
 
           <TabsContent value="kyc">
             <KycDetailsTab kycDetails={kycStatus}
-              // kycDetails={{
-              //   idType: kycStatus.submitted_info.id_type,
-              //   idValue: kycStatus.submitted_info.id_number,
-              //   accountNumber: kycStatus.submitted_info.bank_account,
-              //   ifsc: kycStatus.submitted_info.ifsc_code,
-              //   accountName: kycStatus.submitted_info.account_holder,
-              // }}
-              // kycStatus={{
-              //   status: kycStatus.status,
-              //   date: new Date(kycStatus.last_updated).toLocaleDateString(),
-              //   requestDate: new Date(kycStatus.request_date).toLocaleDateString(),
-              // }}
             />
           </TabsContent>
 
