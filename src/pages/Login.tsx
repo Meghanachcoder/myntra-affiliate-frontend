@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Formik, Form } from "formik";
@@ -12,42 +11,24 @@ import { FormError } from '@/components/stack/stack';
 
 import { mobileNumberSchema, otpSchema } from '@/schema/common';
 import { logHelper, setUserDetails } from '@/utils/utils';
-
-
 import { useLoginMutation, useLoginVerifyOtpMutation } from '@/lib/api/commonApi';
-
 
 const TAG: string = 'Login: ';
 const Login = () => {
-
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  
 
-
-  const {
-    mutate: loginSendOtp,
-    // isLoading: isSendOtpLoading,
-    // isError: isShippingChargeError,
-  } = useLoginMutation({
-    enabled: false
-  });
-
-  const {
-    mutate: loginVerifyOtp,
-    // isLoading: isSendOtpLoading,
-    // isError: isShippingChargeError,
-  } = useLoginVerifyOtpMutation({
-    enabled: false
-  });
+  const { mutate: loginSendOtp } = useLoginMutation({ enabled: false });
+  const { mutate: loginVerifyOtp } = useLoginVerifyOtpMutation({ enabled: false });
 
   const affiliateId = searchParams.get('affiliateId') || '';
 
   const [step, setStep] = useState<'phone' | 'otp'>('phone');
   const [isLoading, setIsLoading] = useState(false);
+  const [otpFormKey, setOtpFormKey] = useState(0); 
+  const [mobile, setMobile] = useState(''); 
 
   const otpInitialValues = { otp: '' };
-
   const phoneInitialValues = { mobileNumber: '' };
 
   const handleSendOtp = async (values: any) => {
@@ -69,12 +50,18 @@ const Login = () => {
             });
           } else {
             toast({ title: res?.msg, variant: "default" });
+            setOtpFormKey(prev => prev + 1);
+            setMobile(values.mobileNumber); 
             setStep('otp');
           }
         },
         onError: (err: any) => {
           logHelper(TAG, " ===> err", err);
-          toast({ title: "Failed to Send OTP", description: err?.response?.data?.msg || "Something went wrong", variant: "destructive" });
+          toast({
+            title: "Failed to Send OTP",
+            description: err?.response?.data?.msg || "Something went wrong",
+            variant: "destructive"
+          });
         }
       });
     } catch (error: any) {
@@ -84,43 +71,35 @@ const Login = () => {
     }
   };
 
-
   const handleVerifyOtp = async (values: any) => {
-
     logHelper(TAG, " ===> handleVerifyOtp", values);
-
     setIsLoading(true);
 
     try {
-
       const formData = {
-        mobile: values.mobileNumber.toString().trim(),
+        mobile: mobile.toString().trim(),
         otp: values.otp.toString().trim()
       };
 
       loginVerifyOtp(formData, {
         onSuccess: async (res: any) => {
-          
           logHelper(TAG, " ===> res", res);
 
           const user = res?.result?.user;
 
           if (res?.status === 403 && res?.result?.requireKyc) {
-
             toast({ title: 'KYC Not Completed', description: res?.msg || 'Redirecting to KYC...' });
 
             const userDetails = {
-              user: user,
+              user,
               accessToken: res?.result?.accessToken,
               refreshToken: res?.result?.refreshToken
             };
 
             setUserDetails(userDetails);
-
             setTimeout(() => {
               navigate('/kyc', { state: { mobile: user?.mobile } });
             }, 100);
-
             return;
           }
 
@@ -136,7 +115,7 @@ const Login = () => {
           toast({ title: res?.msg || "Login Successful", variant: "default" });
 
           const userDetails = {
-            user: user,
+            user,
             accessToken: res?.result?.accessToken,
             refreshToken: res?.result?.refreshToken,
             is_admin: res?.result?.is_admin || false,
@@ -145,15 +124,9 @@ const Login = () => {
           setUserDetails(userDetails);
           logHelper(TAG, " ===> i ran till here ", userDetails);
           await new Promise(resolve => setTimeout(resolve, 2000));
-          if (res?.result?.is_admin) {
-            navigate('/admin');
-          } else {
-            navigate('/dashboard');
-          }
-
+          navigate(res?.result?.is_admin ? '/admin' : '/dashboard');
         },
         onError: (err: any) => {
-
           logHelper(TAG, " ===> err", err);
 
           const status = err?.response?.status;
@@ -161,10 +134,9 @@ const Login = () => {
           const result = err?.response?.data?.result;
 
           if (status === 403 && result?.requireKyc) {
-
             toast({
               title: 'KYC Not Completed',
-              description: msg || 'Redirecting to KYC...',
+              description: msg || 'Redirecting to KYC...'
             });
 
             const userDetails = {
@@ -174,7 +146,6 @@ const Login = () => {
             };
 
             setUserDetails(userDetails);
-
             navigate('/kyc', { state: { mobile: result?.user?.mobile } });
             return;
           }
@@ -182,20 +153,17 @@ const Login = () => {
           toast({
             title: "Failed to Verify OTP",
             description: msg || "Something went wrong",
-            variant: "destructive",
+            variant: "destructive"
           });
         }
-      })
+      });
 
     } catch (error: any) {
       logHelper(TAG, " ===> API Error", error);
     } finally {
       setIsLoading(false);
     }
-
   };
-
-
 
   if (step === 'otp') {
     return (
@@ -204,26 +172,20 @@ const Login = () => {
         subtitle="Enter the 6-digit code sent to your phone"
       >
         <Formik
+          key={otpFormKey}
           initialValues={otpInitialValues}
           validationSchema={otpSchema}
           onSubmit={handleVerifyOtp}
-          onKeyDown={(e: any, values: any) => {
-            if (e.key === "Enter") {
-              handleVerifyOtp(values);
-            }
-          }}
-          name="otpForm"
-          id="otpForm"
         >
-          {({ values, errors, touched, setFieldValue, handleSubmit }: any) => (
+          {({ values, errors, setFieldValue }) => (
             <Form>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">  Enter OTP </label>
+                <label className="text-sm font-medium text-gray-700">Enter OTP</label>
                 <div className="flex justify-center">
                   <InputOTP
                     maxLength={6}
                     value={values.otp}
-                    onChange={(value) => { setFieldValue('otp', value); }}
+                    onChange={(value) => setFieldValue('otp', value)}
                     name="otp"
                     id="otp"
                   >
@@ -237,9 +199,7 @@ const Login = () => {
                     </InputOTPGroup>
                   </InputOTP>
                 </div>
-
                 {errors.otp && <FormError errors={errors.otp} />}
-
               </div>
 
               <Button
@@ -249,7 +209,6 @@ const Login = () => {
               >
                 {isLoading ? 'Verifying...' : 'Verify & Login'}
               </Button>
-
             </Form>
           )}
         </Formik>
@@ -262,7 +221,6 @@ const Login = () => {
         >
           Back to Phone Number
         </Button>
-
       </AuthLayout>
     );
   }
@@ -273,22 +231,12 @@ const Login = () => {
       subtitle="Access your Myntra Affiliate dashboard"
     >
       <Formik
-        initialValues={phoneInitialValues}
+        initialValues={{ mobileNumber: mobile || '' }}
         validationSchema={mobileNumberSchema}
-        onSubmit={(values: any) => {
-          handleSendOtp(values);
-        }}
-        onKeyDown={(e: any, values: any) => {
-          if (e.key === "Enter") {
-            handleSendOtp(values);
-          }
-        }}
-        name="phoneForm"
-        id="phoneForm"
+        onSubmit={handleSendOtp}
       >
-        {({ values, errors, touched, setFieldValue, handleSubmit }) => (
+        {({ values, errors, setFieldValue }) => (
           <Form>
-
             <InputField
               label="Phone Number"
               type="tel"
@@ -298,8 +246,9 @@ const Login = () => {
               value={values.mobileNumber}
               onChange={(e: any) => {
                 setFieldValue('mobileNumber', e.target.value);
+                setMobile(e.target.value);
               }}
-              className="!mb-0 "
+              className="!mb-0"
             />
             {errors.mobileNumber && <FormError errors={errors.mobileNumber} />}
 
@@ -313,7 +262,6 @@ const Login = () => {
           </Form>
         )}
       </Formik>
-
     </AuthLayout>
   );
 };
